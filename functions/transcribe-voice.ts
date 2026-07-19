@@ -14,6 +14,7 @@ function corsHeaders(req: Request) {
       : 'https://weiproduct.github.io',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Max-Age': '86400',
     'Content-Type': 'application/json',
     'Vary': 'Origin',
   };

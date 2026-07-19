@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#FBF3E7" />
+  <title>ilink · 完整 App 原型</title>
+  <!-- FALLBACK: vendor/pretext.js missing, using CDN when available. The prototype remains functional offline. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *{box-sizing:border-box} :root{color-scheme:light;--cream:#fbf3e7;--paper:#fffaf2;--paper-2:#f5eadb;--ink:#2c2925;--ink-2:#5f574e;--muted:#887d70;--line:#e5d7c4;--brick:#b55243;--brick-dark:#934033;--sage:#7d8e6d;--sage-soft:#e8ecdf;--gold:#c99d4d;--white:#fffdf8;--shadow:0 22px 55px rgba(65,49,34,.16);--serif:"Noto Serif SC","Songti SC",Georgia,serif;--sans:"DM Sans","PingFang SC","Noto Sans SC",sans-serif;--safe-bottom:max(12px,env(safe-area-inset-bottom))}
+    html,body{min-height:100%;margin:0} html{scroll-behavior:smooth} body{font-family:var(--sans);background:#ece9e2;color:var(--ink);overflow-x:hidden;overflow-y:auto} button,input{font:inherit} button{color:inherit} svg{display:block}
+    button:focus-visible,[role=button]:focus-visible,[contenteditable=true]:focus-visible{outline:3px solid rgba(181,82,67,.28);outline-offset:3px}
+    [contenteditable=true]:focus-visible{border-radius:4px}
+    .stage{height:100%;display:grid;grid-template-columns:minmax(230px,1fr) minmax(390px,470px) minmax(230px,1fr);gap:28px;align-items:center;max-width:1380px;margin:auto;padding:28px 34px}
+    .stage-copy{max-width:310px;justify-self:end}.eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;color:#81796e;text-transform:uppercase}.stage-copy h1{font-family:var(--serif);font-size:42px;line-height:1.1;letter-spacing:-.045em;margin:12px 0 18px}.stage-copy p{font-size:14px;line-height:1.75;color:#6d665d;margin:0}.stage-copy .rule{width:42px;border-top:2px solid var(--brick);margin:24px 0}.instruction{display:grid;gap:14px;max-width:280px}.instruction-item{border-top:1px solid #cec9bf;padding-top:12px}.instruction-item b{font-size:12px;display:block;margin-bottom:4px}.instruction-item p{font-size:11px;line-height:1.55;color:#777168;margin:0}.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border:1px solid #bfb9ae;border-bottom-width:2px;border-radius:6px;background:#f7f5f0;font-size:10px;font-weight:700}
+    .device{position:relative;width:min(100%,430px);height:min(900px,calc(100vh - 34px));min-height:650px;margin:auto;background:var(--cream);border:9px solid #171613;border-radius:48px;overflow:hidden;box-shadow:var(--shadow),0 4px 10px rgba(46,34,23,.12)}
+    .device:before{content:"";position:absolute;z-index:30;top:9px;left:50%;transform:translateX(-50%);width:102px;height:25px;border-radius:16px;background:#171613}.statusbar{height:47px;padding:14px 21px 0;display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:700;position:relative;z-index:20}.status-icons{display:flex;gap:5px;align-items:center}.status-icons i{display:block;width:5px;height:5px;border-radius:50%;background:currentColor}.status-icons i:nth-child(2){width:12px;border-radius:3px}.status-icons i:nth-child(3){width:9px;height:6px;border:1.5px solid currentColor;background:transparent}
+    .app{height:calc(100% - 47px);position:relative;overflow:hidden}.page{display:none;height:100%;overflow-y:auto;overscroll-behavior:contain;padding:8px 19px 176px;scrollbar-width:none}.page::-webkit-scrollbar{display:none}.page.active{display:block}.page-header{display:flex;align-items:center;justify-content:space-between;margin:2px 0 18px}.page-header small{display:block;font-size:10px;color:var(--muted);margin-bottom:5px}.page-header h2{font-family:var(--serif);font-size:25px;line-height:1.12;letter-spacing:-.035em;margin:0}.avatar{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:grid;place-items:center;font-size:11px;font-weight:700}.icon-btn{width:44px;height:44px;border:1px solid var(--line);background:var(--paper);border-radius:50%;display:grid;place-items:center;cursor:pointer}.icon-btn svg{width:18px}
+    .device-line{display:flex;align-items:center;gap:7px;margin:-7px 0 17px;font-size:9px;color:var(--sage)}.device-dot{width:7px;height:7px;border-radius:50%;background:var(--sage);box-shadow:0 0 0 4px rgba(125,142,109,.12)}
+    .today-summary{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}.today-summary p{font-family:var(--serif);font-size:13px;line-height:1.55;color:#5b5147;margin:0}.today-summary strong{font-family:var(--serif);font-size:23px;font-weight:600;color:var(--brick);white-space:nowrap}.today-summary span{display:block;font:700 8px var(--sans);color:var(--muted);text-align:right;margin-top:3px}
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:20px 1px 11px}.section-title h3{font-size:12px;margin:0}.section-title button,.text-btn{border:0;background:transparent;color:var(--brick);font-size:9px;font-weight:700;padding:8px;cursor:pointer}.timeline{position:relative;padding-left:43px}.timeline:before{content:"";position:absolute;left:25px;top:6px;bottom:4px;width:1px;background:var(--line)}.event{position:relative;margin-bottom:11px;border:1px solid var(--line);background:rgba(255,250,242,.72);border-radius:4px 15px 15px 15px;padding:12px 12px 11px;cursor:pointer;transition:.18s}.event:hover{background:var(--paper);transform:translateY(-1px)}.event:before{content:"";position:absolute;left:-23px;top:16px;width:8px;height:8px;border:2px solid var(--brick);background:var(--cream);border-radius:50%}.event-time{position:absolute;left:-65px;top:14px;width:35px;text-align:right;color:var(--muted);font-size:7px}.event-top{display:flex;justify-content:space-between;gap:10px}.event b{font-family:var(--serif);font-size:11px;font-weight:600}.event p{font-size:9px;line-height:1.5;color:var(--ink-2);margin:5px 0 0}.tag{display:inline-flex;align-items:center;padding:4px 6px;border-radius:5px;background:var(--paper-2);color:#76695b;font-size:7px;font-weight:600;white-space:nowrap}.event-meta{display:flex;gap:5px;margin-top:8px}.unknown{margin:0 0 11px 43px;font-family:var(--serif);font-size:8px;color:var(--muted);font-style:italic}
+    .record-dock{position:absolute;z-index:22;left:12px;right:12px;bottom:72px;border:1px solid #d8c6b2;background:rgba(255,250,242,.95);backdrop-filter:blur(18px);border-radius:22px;padding:8px;box-shadow:0 12px 30px rgba(74,52,34,.17);transition:.2s}.record-control{position:relative;width:100%;height:64px;border:0;border-radius:15px;background:var(--brick);color:#fff8ef;display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:10px;padding:0 15px 0 8px;cursor:pointer;touch-action:none;user-select:none;overflow:hidden}.record-control:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.07),transparent 40%);pointer-events:none}.mic-orb{position:relative;width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center}.mic-orb svg{width:21px;position:relative;z-index:2}.mic-orb:after{content:"";position:absolute;inset:8px;border:1px solid rgba(255,255,255,.28);border-radius:50%}.voice-core{text-align:left;min-width:0}.voice-label{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;margin-bottom:7px}.record-time{display:none;font-variant-numeric:tabular-nums;font-size:10px;opacity:.85}.waveform{height:17px;display:flex;align-items:center;gap:3px;overflow:hidden}.waveform i{display:block;width:3px;height:var(--h);max-height:16px;border-radius:3px;background:rgba(255,255,255,.78);transform-origin:center}.voice-hint{font-size:8px;line-height:1.35;text-align:right;opacity:.78;white-space:nowrap}.record-control.recording{background:var(--brick-dark)}.record-control.recording .mic-orb{background:#fff8ef;color:var(--brick)}.record-control.recording .mic-orb:after{animation:pulse 1.2s infinite;border-color:#fff8ef}.record-control.recording .voice-label span:first-child{display:none}.record-control.recording .record-time{display:inline}.record-control.recording .waveform i{animation:wave .72s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-.055s)}.record-control.processing .waveform i{animation:softwave 1s ease-in-out infinite alternate}.record-control.processing{background:var(--sage)}
+    @keyframes wave{from{transform:scaleY(.35);opacity:.55}to{transform:scaleY(1.2);opacity:1}}@keyframes softwave{from{transform:scaleY(.55)}to{transform:scaleY(.9)}}@keyframes pulse{0%{transform:scale(1);opacity:1}100%{transform:scale(1.7);opacity:0}}
+    .bottom-nav{position:absolute;z-index:21;left:0;right:0;bottom:0;height:76px;padding:7px 8px var(--safe-bottom);background:rgba(255,250,242,.96);backdrop-filter:blur(18px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr)}.nav-btn{min-width:44px;min-height:54px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;align-content:center;gap:3px;font-size:8px;cursor:pointer}.nav-btn svg{width:20px;height:20px;stroke:currentColor}.nav-btn.active{color:var(--brick);font-weight:700}.nav-btn.active svg{fill:rgba(181,82,67,.10)}
+    .letter-card{border:1px solid var(--line);background:var(--paper);padding:17px 16px;border-radius:4px 18px 18px 18px}.letter-kicker{font-size:7px;letter-spacing:.11em;color:var(--brick);font-weight:700;text-transform:uppercase}.letter-card h3{font-family:var(--serif);font-size:20px;line-height:1.38;font-weight:600;margin:7px 0 9px}.letter-card>p{font-family:var(--serif);font-size:10px;line-height:1.75;color:#5e5247;margin:0}.bars{display:grid;gap:9px;margin-top:15px}.bar-row{display:grid;grid-template-columns:55px 1fr 40px;gap:8px;align-items:center;font-size:8px}.bar-row b{text-align:right;font-variant-numeric:tabular-nums}.bar{height:6px;border-radius:6px;background:#eee0cf;overflow:hidden}.bar i{height:100%;display:block;border-radius:inherit;background:var(--brick)}.bar-row:nth-child(2) .bar i{background:var(--sage)}.bar-row:nth-child(3) .bar i{background:var(--gold)}.evidence{margin-top:15px;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:8px;color:var(--muted)}.experiment{border-left:3px solid var(--sage);background:var(--sage-soft);border-radius:0 12px 12px 0;padding:13px 14px}.experiment small{font-size:7px;font-weight:700;letter-spacing:.08em;color:#657456;text-transform:uppercase}.experiment p{font-size:10px;line-height:1.55;margin:5px 0 0}.primary-wide{width:100%;min-height:48px;border:0;border-radius:12px;background:var(--brick);color:#fff8ef;font-size:11px;font-weight:700;cursor:pointer;margin-top:12px}
+    .family-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--paper-2);padding:4px;border-radius:11px;margin-bottom:14px}.family-tab{min-height:38px;border:0;background:transparent;border-radius:8px;color:var(--muted);font-size:10px;font-weight:600;cursor:pointer}.family-tab.active{background:var(--paper);color:var(--ink);box-shadow:0 2px 7px rgba(80,58,35,.07)}.family-card{border:1px solid var(--line);background:var(--paper);padding:16px;border-radius:4px 18px 18px 18px}.from{display:flex;align-items:center;gap:10px;padding-bottom:13px}.from .avatar{background:#dfe6d5}.from b{font-family:var(--serif);font-size:13px}.from small{display:block;color:var(--muted);font-size:8px;margin-top:3px}.card-section{border-top:1px solid var(--line);padding:11px 0}.card-section small{font-size:7px;color:var(--brick);font-weight:700;letter-spacing:.08em}.card-section p{font-family:var(--serif);font-size:10px;line-height:1.6;margin:5px 0 0}.card-section.help{background:var(--paper-2);border:0;border-radius:10px;padding:11px;margin-top:3px}.reply-row{display:grid;grid-template-columns:1.2fr .8fr;gap:8px;margin-top:10px}.reply-row button{min-height:44px;border:1px solid var(--line);background:var(--paper);border-radius:11px;font-size:9px;font-weight:700;cursor:pointer}.reply-row button:first-child{background:var(--brick);border-color:var(--brick);color:#fff8ef}.privacy-note{display:flex;gap:7px;align-items:flex-start;color:var(--muted);font-size:8px;line-height:1.45;margin:11px 3px}.privacy-note svg{width:12px;flex:0 0 auto;margin-top:1px}
+    .goal-card{border:1px solid var(--line);background:var(--paper);border-radius:4px 18px 18px 18px;padding:15px}.goal-card small{font-size:8px;color:var(--muted)}.goal-card h3{font-family:var(--serif);font-size:17px;margin:7px 0 14px}.goal-progress{height:7px;background:var(--paper-2);border-radius:8px;overflow:hidden}.goal-progress i{display:block;height:100%;width:42%;background:var(--brick)}.goal-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:8px;margin-top:7px}.setting-list{margin-top:14px;border-top:1px solid var(--line)}.setting{width:100%;min-height:58px;border:0;border-bottom:1px solid var(--line);background:transparent;display:flex;align-items:center;gap:12px;text-align:left;padding:9px 1px;cursor:pointer}.setting-icon{width:34px;height:34px;border-radius:10px;background:var(--paper-2);display:grid;place-items:center;color:var(--brick)}.setting-icon svg{width:17px}.setting-copy{flex:1}.setting-copy b{font-size:10px;display:block}.setting-copy small{font-size:8px;color:var(--muted)}.chev{color:var(--muted);font-size:16px}
+    .sheet-backdrop{position:absolute;z-index:40;inset:0;background:rgba(39,31,24,.24);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:.22s}.sheet-backdrop.open{opacity:1;pointer-events:auto}.sheet{position:absolute;left:8px;right:8px;bottom:8px;background:var(--paper);border:1px solid var(--line);border-radius:24px 24px 17px 17px;padding:10px 16px 18px;transform:translateY(110%);transition:transform .32s cubic-bezier(.2,.8,.2,1);box-shadow:0 -18px 50px rgba(60,43,29,.18)}.open .sheet{transform:translateY(0)}.handle{width:38px;height:4px;border-radius:4px;background:#d7c9b7;margin:0 auto 15px}.sheet h3{font-family:var(--serif);font-size:20px;margin:0 0 6px}.sheet-sub{font-size:9px;color:var(--muted);margin-bottom:13px}.transcript{border:1px solid var(--line);background:var(--cream);border-radius:12px;padding:12px;font-family:var(--serif);font-size:11px;line-height:1.6}.parsed-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.parsed{border-bottom:1px solid var(--line);padding:8px 2px}.parsed small{display:block;font-size:7px;color:var(--muted);margin-bottom:3px}.parsed b{font-size:10px}.sheet-actions{display:grid;grid-template-columns:.7fr 1.3fr;gap:8px;margin-top:14px}.sheet-actions button{min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--paper);font-size:10px;font-weight:700;cursor:pointer}.sheet-actions .save{border-color:var(--brick);background:var(--brick);color:#fff8ef}.toast{position:absolute;z-index:60;top:58px;left:50%;transform:translate(-50%,-18px);opacity:0;background:#2e2b26;color:#fff9f0;border-radius:999px;padding:10px 14px;font-size:9px;font-weight:600;white-space:nowrap;transition:.25s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
+    .screen-map{max-width:280px}.screen-map h3{font-family:var(--serif);font-size:20px;margin:0 0 16px}.map-item{display:flex;gap:12px;padding:11px 0;border-top:1px solid #d1ccc2}.map-index{font-size:10px;color:var(--brick);font-weight:700;padding-top:2px}.map-item b{font-size:11px}.map-item p{font-size:10px;line-height:1.5;color:#777168;margin:3px 0 0}.map-item.active b{color:var(--brick)}
+    @media(max-width:960px){.stage{grid-template-columns:1fr;padding:16px}.stage-copy,.screen-map{display:none}.device{height:calc(100vh - 20px);max-width:430px}}
+    @media(max-width:520px){body{background:var(--cream)}.stage{display:block;width:100%;height:100dvh;min-height:100dvh;padding:0}.device{width:100%;max-width:none;height:100dvh;min-height:0;border:0;border-radius:0;box-shadow:none}.device:before{display:none}.statusbar{padding-top:max(10px,env(safe-area-inset-top));height:calc(38px + env(safe-area-inset-top))}.app{height:calc(100% - 38px - env(safe-area-inset-top))}.page{padding-left:18px;padding-right:18px}.record-dock{bottom:calc(68px + var(--safe-bottom))}.bottom-nav{height:calc(68px + var(--safe-bottom))}}
+    @media(prefers-color-scheme:dark){:root{--cream:#211e1a;--paper:#2a2621;--paper-2:#342d26;--ink:#f3eadf;--ink-2:#d1c3b4;--muted:#a99b8c;--line:#4a4037;--sage-soft:#30382c;--white:#2a2621;--shadow:0 22px 55px rgba(0,0,0,.34)}body{background:#12110f}.device{border-color:#080706}.bottom-nav,.record-dock{background:rgba(42,38,33,.95)}.event:hover{background:var(--paper)}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+  </style>
+  <style>
+    .record-dock{bottom:82px}
+    .bottom-nav{grid-template-columns:repeat(3,1fr)}
+    .nav-btn.capture-tab{position:relative}.tab-orb{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--paper-2);border:1px solid var(--line);margin-top:-11px;transition:.18s;color:var(--brick)}.capture-tab .tab-orb svg{width:19px;height:19px;stroke:currentColor;fill:none}.capture-tab.active .tab-orb{background:var(--brick);border-color:var(--brick);box-shadow:0 6px 14px rgba(181,82,67,.22);color:#fff8ef}.capture-tab span:last-child{margin-top:-2px}
+    .app:not(.capture-mode) .page{padding-bottom:92px}
+    .family-list,.share-stream{display:grid;gap:10px}.family-intro{font-family:var(--serif);font-size:11px;line-height:1.65;color:var(--ink-2);margin:-4px 0 14px}.family-cell{width:100%;min-height:78px;border:1px solid var(--line);background:var(--paper);border-radius:4px 16px 16px 16px;padding:12px;display:grid;grid-template-columns:46px 1fr auto;gap:11px;align-items:center;text-align:left;cursor:pointer}.family-cell:hover{background:var(--white)}.family-avatar{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--sage-soft);border:1px solid #d4ddc9;font-family:var(--serif);font-size:14px}.family-avatar.father{background:#eee3d3;border-color:#e3d3bc}.family-cell-copy{min-width:0}.family-cell-copy b{font-family:var(--serif);font-size:12px}.family-cell-copy small{display:block;color:var(--muted);font-size:8px;margin:3px 0 6px}.family-cell-copy p{font-size:9px;line-height:1.35;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.family-cell-side{text-align:right;color:var(--muted);font-size:8px}.unread{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:99px;background:var(--brick);color:#fff8ef;font-size:8px;font-weight:700;margin-bottom:8px}.family-add{min-height:50px;border:1px dashed #ccbda9;background:transparent;border-radius:12px;color:var(--brick);font-size:9px;font-weight:700;cursor:pointer}.family-detail-view[hidden],.family-list-view[hidden]{display:none}.detail-top{display:flex;align-items:center;gap:10px;margin-bottom:16px}.back-btn{width:42px;height:42px;border:1px solid var(--line);background:var(--paper);border-radius:50%;font-size:20px;cursor:pointer}.detail-person{flex:1}.detail-person small{display:block;font-size:8px;color:var(--muted);margin-bottom:3px}.detail-person h2{font-family:var(--serif);font-size:22px;margin:0}.detail-profile{display:flex;align-items:center;gap:11px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0}.detail-profile-copy b{font-family:var(--serif);font-size:12px}.detail-profile-copy span{display:block;color:var(--muted);font-size:8px;margin-top:4px}.share-entry{border:1px solid var(--line);background:var(--paper);border-radius:4px 15px 15px 15px;padding:13px}.share-entry.sent{border-radius:15px 4px 15px 15px;background:var(--sage-soft);border-color:#d6dfcb}.share-entry-head{display:flex;justify-content:space-between;gap:8px;margin-bottom:8px}.share-direction{font-size:7px;font-weight:700;color:var(--brick);letter-spacing:.06em}.share-entry.sent .share-direction{color:#657456}.share-date{font-size:7px;color:var(--muted)}.share-entry h4{font-family:var(--serif);font-size:12px;margin:0 0 6px}.share-entry p{font-family:var(--serif);font-size:9px;line-height:1.55;color:var(--ink-2);margin:0}.share-entry .help-line{margin-top:9px;padding-top:8px;border-top:1px solid var(--line);font-family:var(--sans);font-size:8px;color:var(--brick)}
+    .family-view-tabs,.my-view-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--paper-2);padding:4px;border-radius:11px;margin:-4px 0 15px}.family-view-tab,.my-view-tab{min-height:40px;border:0;background:transparent;border-radius:8px;color:var(--muted);font-size:9px;font-weight:700;cursor:pointer}.family-view-tab.active,.my-view-tab.active{background:var(--paper);color:var(--brick);box-shadow:0 2px 7px rgba(80,58,35,.07)}.family-focus-view[hidden],.family-members-view[hidden],.attention-panel[hidden],.my-day-view[hidden],.my-shares-view[hidden]{display:none}.focus-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}.focus-toolbar span{font-size:8px;color:var(--muted)}.focus-range{display:flex;gap:4px}.focus-range button{min-height:32px;border:1px solid var(--line);background:transparent;border-radius:8px;padding:0 10px;font-size:8px;font-weight:700;color:var(--muted);cursor:pointer}.focus-range button.active{background:var(--brick);border-color:var(--brick);color:#fff8ef}.focus-summary{border-left:3px solid var(--sage);background:var(--sage-soft);border-radius:0 14px 14px 0;padding:13px 14px;margin-bottom:14px}.focus-summary small{font-size:7px;color:#657456;font-weight:700;letter-spacing:.08em}.focus-summary h3{font-family:var(--serif);font-size:15px;line-height:1.5;margin:6px 0}.focus-summary p{font-size:8px;line-height:1.55;color:var(--ink-2);margin:0}.attention-list{display:grid;gap:9px}.attention-card{width:100%;border:1px solid var(--line);background:var(--paper);border-radius:4px 15px 15px 15px;padding:12px;text-align:left;display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:start;cursor:pointer}.attention-card:hover{background:var(--white)}.attention-person{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--sage-soft);font-family:var(--serif);font-size:10px}.attention-person.father{background:#eee3d3}.attention-copy{min-width:0}.attention-label{display:inline-block;font-size:7px;font-weight:700;color:var(--brick);margin-bottom:5px}.attention-label.life{color:#657456}.attention-copy b{display:block;font-family:var(--serif);font-size:11px;margin-bottom:4px}.attention-copy p{font-size:8px;line-height:1.45;color:var(--ink-2);margin:0}.attention-source{display:block;font-size:7px;color:var(--muted);margin-top:7px}.attention-arrow{color:var(--brick);font-size:16px;padding-top:8px}.focus-note{font-size:8px;line-height:1.55;color:var(--muted);margin:12px 2px 0}
+    .detail-top .icon-btn svg{stroke:currentColor;fill:none}
+    .direction-tabs,.range-filter{display:flex;gap:4px;background:var(--paper-2);padding:4px;border-radius:11px;margin:13px 0}.direction-tab,.range-btn{flex:1;min-height:38px;border:0;background:transparent;border-radius:8px;color:var(--muted);font-size:8px;font-weight:700;cursor:pointer}.direction-tab.active,.range-btn.active{background:var(--paper);color:var(--brick);box-shadow:0 2px 7px rgba(80,58,35,.07)}.empty-filter{border:1px dashed #ccbda9;border-radius:12px;padding:20px;text-align:center;font-family:var(--serif);font-size:10px;color:var(--muted)}
+    .review-period{display:flex;align-items:center;justify-content:space-between;margin-top:-5px;color:var(--muted);font-size:8px}.review-period b{color:var(--ink);font-weight:600}
+    .management-stack{display:grid;gap:13px}.manage-card{border:1px solid var(--line);background:var(--paper);border-radius:4px 16px 16px 16px;padding:14px}.manage-head{display:flex;gap:10px;align-items:center;padding-bottom:11px;border-bottom:1px solid var(--line)}.manage-head .setting-icon{flex:0 0 auto}.manage-title{flex:1}.manage-title b{font-family:var(--serif);font-size:12px}.manage-title small{display:block;font-size:8px;color:var(--muted);margin-top:3px}.manage-action{min-height:32px;border:1px solid var(--line);background:transparent;border-radius:8px;color:var(--brick);font-size:8px;font-weight:700;padding:0 9px;cursor:pointer}.manage-row{display:flex;align-items:center;gap:9px;min-height:44px;border-bottom:1px solid var(--line)}.manage-row:last-child{border-bottom:0}.manage-row-copy{flex:1}.manage-row-copy b{display:block;font-size:9px}.manage-row-copy small{font-size:7px;color:var(--muted)}.status-pill{font-size:7px;color:#657456;background:var(--sage-soft);padding:5px 7px;border-radius:99px}.status-pill.private{color:var(--brick);background:var(--paper-2)}
+    .intent-examples{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:18px}.intent-chip{min-height:34px;border:1px solid var(--line);background:var(--paper);border-radius:99px;padding:0 10px;color:var(--ink-2);font-size:8px;cursor:pointer}.intent-chip:hover{border-color:var(--brick);color:var(--brick)}.intent-badge{display:inline-flex;align-items:center;gap:6px;background:var(--sage-soft);color:#657456;border-radius:99px;padding:5px 8px;font-size:7px;font-weight:700;margin-bottom:9px}.intent-badge:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--sage)}
+    .custom-range{display:grid;grid-template-columns:1fr auto 1fr auto;align-items:center;gap:6px;margin:-4px 0 12px;padding:10px;border:1px solid var(--line);background:var(--paper);border-radius:10px}.custom-range[hidden]{display:none}.custom-range input{min-width:0;width:100%;height:32px;border:1px solid var(--line);border-radius:7px;background:var(--cream);padding:0 5px;color:var(--ink);font:7px var(--sans)}.custom-range span{font-size:8px;color:var(--muted)}.custom-range button{height:32px;border:0;border-radius:7px;background:var(--brick);color:#fff8ef;font-size:8px;font-weight:700;padding:0 9px;cursor:pointer}
+    .avatar-button{padding:0;cursor:pointer}.daily-intro{font-family:var(--serif);font-size:11px;line-height:1.65;color:var(--ink-2);margin:-4px 0 14px}.daily-hero{border:1px solid var(--line);background:var(--paper);border-radius:4px 17px 17px 17px;padding:15px}.daily-hero-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.daily-hero-head small{font-size:8px;color:var(--brick);font-weight:700}.daily-status{font-size:7px;color:#657456;background:var(--sage-soft);border-radius:99px;padding:5px 8px}.daily-hero h3{font-family:var(--serif);font-size:17px;line-height:1.45;margin:9px 0 10px}.daily-hero p{font-family:var(--serif);font-size:10px;line-height:1.65;color:var(--ink-2);margin:0}.daily-progress{height:5px;background:var(--paper-2);border-radius:8px;overflow:hidden;margin-top:13px}.daily-progress i{display:block;width:50%;height:100%;background:var(--brick);transition:.25s}.organize-list{display:grid;gap:9px}.organize-card{border:1px solid var(--line);background:rgba(255,250,242,.72);border-radius:4px 14px 14px 14px;padding:12px}.organize-card.confirmed{background:var(--sage-soft);border-color:#d5ddca}.organize-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}.organize-head span{font-size:8px;color:var(--muted)}.organize-head b{font-size:8px;color:var(--brick)}.organize-card.confirmed .organize-head b{color:#657456}.organize-card h4{font-family:var(--serif);font-size:12px;margin:0 0 5px}.organize-card p{font-size:9px;line-height:1.5;color:var(--ink-2);margin:0}.organize-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:9px;border-top:1px solid var(--line)}.organize-meta span{font-size:7px;color:var(--muted)}.organize-actions{display:flex;gap:5px}.organize-actions button{min-height:30px;border:1px solid var(--line);background:var(--paper);border-radius:7px;padding:0 9px;font-size:8px;font-weight:700;cursor:pointer}.organize-actions .confirm-record{background:var(--brick);border-color:var(--brick);color:#fff8ef}.organize-card.confirmed .confirm-record{background:transparent;border-color:transparent;color:#657456}.daily-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.daily-actions button{min-height:48px;border:1px solid var(--brick);border-radius:12px;background:var(--paper);color:var(--brick);font-size:10px;font-weight:700;cursor:pointer}.daily-actions button:last-child{background:var(--brick);color:#fff8ef}.manage-back{display:flex;align-items:center;gap:10px;margin-bottom:16px}.manage-back .detail-person h2{font-size:25px}
+    .page[data-page="family"]{overflow-anchor:none}.page[data-page="family"]>.event:before{display:none}
+    .page[data-page="family"]>.event{margin-bottom:0}
+    .share-options{display:grid;gap:8px;margin-top:12px}
+    .share-line{display:grid;grid-template-columns:22px 1fr;gap:9px;align-items:start;border:1px solid var(--line);background:var(--cream);border-radius:11px;padding:10px;cursor:pointer}
+    .share-line input{width:18px;height:18px;accent-color:var(--brick);margin:1px 0 0}
+    .share-line b{display:block;font-size:9px;margin-bottom:3px}.share-line span{display:block;font-family:var(--serif);font-size:10px;line-height:1.5;color:var(--ink-2)}
+    .share-preview{border-left:3px solid var(--sage);background:var(--sage-soft);padding:10px 11px;margin-top:10px;border-radius:0 10px 10px 0;font-size:9px;line-height:1.55}
+    .capture-home{display:none;position:absolute;z-index:20;inset:0;background:var(--cream);padding:18px 24px 184px;flex-direction:column;overflow:hidden}
+    .capture-mode .capture-home{display:flex}.capture-mode .page{visibility:hidden}.capture-mode .bottom-nav{opacity:1;pointer-events:auto}
+    .capture-brand{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--muted)}.capture-brand b{font-family:var(--serif);font-size:17px;color:var(--ink);letter-spacing:-.03em}.capture-brand span{display:flex;align-items:center;gap:7px}.capture-brand i{width:7px;height:7px;border-radius:50%;background:var(--sage);box-shadow:0 0 0 4px rgba(125,142,109,.12)}
+    .capture-center{margin:auto 0;transform:translateY(-12px);text-align:center}.capture-center small{font-size:9px;color:var(--brick);font-weight:700;letter-spacing:.1em}.capture-center h2{font-family:var(--serif);font-size:31px;font-weight:600;line-height:1.3;letter-spacing:-.04em;margin:12px 0 9px}.capture-center p{font-family:var(--serif);font-size:11px;line-height:1.7;color:var(--muted);margin:0 auto;max-width:280px}
+    .hero-waveform{height:74px;display:flex;align-items:center;justify-content:center;gap:5px;margin:28px auto 20px}.hero-waveform i{display:block;width:4px;height:var(--h);border-radius:5px;background:var(--brick);opacity:calc(.34 + var(--o));transform-origin:center;transition:.25s}
+    .is-recording .hero-waveform i{animation:hero-wave .62s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-.047s);opacity:.88}.is-processing .hero-waveform i{background:var(--sage);animation:softwave .85s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-.045s)}
+    @keyframes hero-wave{from{transform:scaleY(.28)}to{transform:scaleY(1.16)}}
+    .capture-example{display:inline-block;border-top:1px solid var(--line);padding-top:13px;font-size:8px;color:var(--muted)}
+    .capture-skip{display:none}
+    .capture-mode .record-dock{left:18px;right:18px;bottom:82px;padding:0;border:0;background:transparent;box-shadow:none;backdrop-filter:none}.capture-mode .record-control{height:70px;border-radius:18px;box-shadow:0 12px 26px rgba(181,82,67,.22)}
+    @media(max-width:520px){.record-dock{bottom:calc(74px + var(--safe-bottom))}}
+    @media(max-width:520px){.capture-mode .record-dock{bottom:calc(74px + var(--safe-bottom))}}
+
+    /* One continuous story · App first, smart glasses second */
+    .language-switch{position:fixed;z-index:100;top:18px;right:22px;display:flex;gap:3px;padding:4px;border:1px solid rgba(95,87,78,.18);border-radius:999px;background:rgba(255,250,242,.90);box-shadow:0 8px 26px rgba(55,43,32,.10);backdrop-filter:blur(18px)}
+    .language-switch button{min-width:48px;min-height:38px;padding:0 13px;border:0;border-radius:999px;background:transparent;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer}
+    .language-switch button.active{background:var(--ink);color:var(--paper);box-shadow:0 3px 10px rgba(44,41,37,.18)}
+    .stage{min-height:100vh}
+    .hardware-story{min-height:100vh;overflow:visible;padding:86px 40px 38px;background:var(--cream)}
+    .hardware-shell{width:min(1240px,100%);min-height:calc(100vh - 124px);margin:auto;display:flex;flex-direction:column;justify-content:center}
+    .hardware-header{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:52px;align-items:end;margin-bottom:25px}
+    .hardware-title .eyebrow{color:var(--brick)}
+    .hardware-title h1{font-family:var(--serif);font-size:clamp(38px,4.5vw,64px);font-weight:600;line-height:1.08;letter-spacing:-.055em;margin:10px 0 0;max-width:820px}
+    .hardware-intro{border-left:2px solid var(--brick);padding-left:18px;font-family:var(--serif);font-size:13px;line-height:1.75;color:var(--ink-2);margin:0}
+    .hardware-hero{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(360px,.82fr);gap:18px;align-items:stretch}
+    .glasses-panel{position:relative;min-height:400px;overflow:hidden;border:1px solid rgba(95,87,78,.14);border-radius:8px 30px 30px 30px;background:#fbf3e7;box-shadow:0 20px 50px rgba(65,49,34,.08)}
+    .glasses-panel:after{content:"";position:absolute;inset:auto 0 0;height:38%;background:linear-gradient(transparent,rgba(251,243,231,.68));pointer-events:none}
+    .glasses-image{width:100%;height:100%;min-height:400px;object-fit:cover;display:block;mix-blend-mode:multiply}
+    .glasses-label{position:absolute;z-index:2;display:flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid rgba(95,87,78,.16);border-radius:999px;background:rgba(255,250,242,.92);box-shadow:0 6px 18px rgba(61,47,34,.08);font-size:9px;font-weight:700;backdrop-filter:blur(12px)}
+    .glasses-label i{width:7px;height:7px;border-radius:50%;background:var(--brick)}
+    .glasses-label.camera{top:18%;right:6%}.glasses-label.privacy{bottom:14%;left:7%}.glasses-label.privacy i{background:var(--sage)}
+    .glasses-button{position:absolute;z-index:8;left:69.1%;top:48.2%;width:31px;height:15px;padding:0;border:1px solid rgba(25,23,20,.72);border-radius:9px;background:linear-gradient(#5a5753,#272624);box-shadow:inset 0 1px 1px rgba(255,255,255,.28),0 0 0 4px rgba(181,82,67,.08);transform:translate(-50%,-50%) rotate(6deg);cursor:pointer}
+    .glasses-button:before{content:"";position:absolute;inset:-9px;border:1px solid rgba(181,82,67,.52);border-radius:50%;animation:button-ring 2.35s ease-out infinite}
+    .glasses-button:active{transform:translate(-50%,-44%) rotate(6deg) scale(.94)}
+    .tap-gesture{position:absolute;z-index:7;left:72%;top:51%;display:flex;align-items:center;gap:6px;color:var(--brick);pointer-events:none;animation:tap-glasses 2.35s cubic-bezier(.55,.05,.28,1) infinite}
+    .tap-gesture svg{width:54px;height:66px;overflow:visible;filter:drop-shadow(0 5px 7px rgba(65,49,34,.14));transform:rotate(-24deg)}
+    .tap-gesture span{transform:translate(-14px,20px);padding:6px 8px;border-radius:999px;background:rgba(255,250,242,.9);border:1px solid rgba(181,82,67,.18);font-size:8px;font-weight:700;white-space:nowrap}
+    .capture-flash{position:absolute;z-index:6;inset:0;background:rgba(255,253,248,.72);opacity:0;pointer-events:none}
+    .glasses-panel.captured .capture-flash{animation:frame-flash .62s ease-out}.glasses-panel.captured .glasses-button:before{border-color:var(--sage);animation:none;opacity:1}
+    @keyframes button-ring{0%,48%{transform:scale(.72);opacity:0}58%{opacity:.9}82%,100%{transform:scale(1.35);opacity:0}}
+    @keyframes tap-glasses{0%,35%,100%{transform:translate(28px,42px);opacity:0}45%{opacity:1}62%,72%{transform:translate(0,0);opacity:1}84%{transform:translate(16px,24px);opacity:0}}
+    @keyframes frame-flash{0%{opacity:0}16%{opacity:.9}100%{opacity:0}}
+    .loop-panel{border:1px solid var(--line);border-radius:30px 8px 30px 30px;background:var(--paper);padding:25px 23px;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(65,49,34,.08)}
+    .loop-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding-bottom:17px;border-bottom:1px solid var(--line)}
+    .loop-head small{display:block;font-size:8px;color:var(--brick);font-weight:700;letter-spacing:.12em;margin-bottom:6px}.loop-head h2{font-family:var(--serif);font-size:22px;letter-spacing:-.035em;margin:0}
+    .loop-status{display:flex;align-items:center;gap:7px;color:var(--sage);font-size:8px;font-weight:700;white-space:nowrap}.loop-status i{width:7px;height:7px;border-radius:50%;background:var(--sage);box-shadow:0 0 0 4px rgba(125,142,109,.12)}
+    .hardware-flow{display:grid;gap:0;margin:auto 0}
+    .hardware-step{position:relative;display:grid;grid-template-columns:42px 1fr auto;gap:11px;align-items:center;padding:14px 0}
+    .hardware-step:not(:last-child):after{content:"";position:absolute;left:20px;top:51px;bottom:-4px;width:1px;background:var(--line)}
+    .step-index{position:relative;z-index:1;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:var(--cream);color:var(--brick);font-size:9px;font-weight:700}
+    .hardware-step:nth-child(4) .step-index{background:var(--sage-soft);color:#657456;border-color:#d5dfca}.hardware-step:last-child .step-index{background:var(--brick);border-color:var(--brick);color:#fff8ef}
+    .step-copy b{display:block;font-family:var(--serif);font-size:12px;margin-bottom:3px}.step-copy span{display:block;font-size:8px;line-height:1.45;color:var(--muted)}
+    .step-chip{padding:5px 7px;border-radius:5px;background:var(--paper-2);font-size:7px;font-weight:700;color:#74685c;white-space:nowrap}
+    .trust-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+    .trust-item{display:flex;align-items:center;gap:8px;min-height:54px;padding:10px 12px;border-top:1px solid #cfc3b4;color:var(--ink-2);font-size:9px;line-height:1.35}
+    .trust-item svg{width:18px;height:18px;flex:0 0 auto;color:var(--brick)}
+    .hardware-caption{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:14px;color:var(--muted);font-size:8px}
+    .hardware-caption strong{color:var(--ink);font-weight:700}
+    @media(max-width:960px){
+      .language-switch{top:10px;right:14px}.hardware-story{padding:70px 18px 28px}.hardware-shell{justify-content:flex-start}.hardware-header{grid-template-columns:1fr;gap:16px}.hardware-title h1{font-size:38px}.hardware-intro{max-width:600px}.hardware-hero{grid-template-columns:1fr}.glasses-panel,.glasses-image{min-height:340px}.trust-bar{grid-template-columns:1fr 1fr 1fr}
+    }
+    @media(max-width:520px){
+      .language-switch{top:max(7px,env(safe-area-inset-top));right:8px;transform:scale(.86);transform-origin:top right}.hardware-story{padding:40px 15px 28px}.hardware-title h1{font-size:32px}.hardware-header{margin-bottom:18px}.hardware-intro{font-size:11px}.glasses-panel{min-height:300px;border-radius:6px 22px 22px 22px}.glasses-image{min-height:300px}.glasses-label.camera{top:14%;right:4%}.glasses-button{width:27px;height:13px}.tap-gesture{left:69%;top:49%;transform:scale(.82)}.tap-gesture span{display:none}.loop-panel{padding:21px 16px;border-radius:22px 6px 22px 22px}.hardware-step{grid-template-columns:38px 1fr}.step-index{width:38px;height:38px}.hardware-step:not(:last-child):after{left:18px;top:48px}.step-chip{display:none}.trust-bar{grid-template-columns:1fr}.trust-item{min-height:44px}.hardware-caption{align-items:flex-start;flex-direction:column;gap:5px}
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zM9 20v-6h6v6" fill="none" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-daily" viewBox="0 0 24 24"><path d="M6 4h12a2 2 0 0 1 2 2v14H4V6a2 2 0 0 1 2-2Zm2 5 1.5 1.5L12 8m-4 7 1.5 1.5L12 14m2-4h3m-3 6h3" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-review" viewBox="0 0 24 24"><path d="M5 19V9m7 10V5m7 14v-7" fill="none" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-family" viewBox="0 0 24 24"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm8-1a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM3 19c.3-3.1 2-5 5-5s4.7 1.9 5 5m0-5c2.8-.4 5 1.2 5.5 4" fill="none" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-me" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5" fill="none" stroke-width="1.8"/><path d="M5 20c.5-4.1 2.8-6.2 7-6.2s6.5 2.1 7 6.2" fill="none" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="12" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-3 0h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17h12l-1.6-2.2V10a4.4 4.4 0 0 0-8.8 0v4.8zm4 3h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+    <symbol id="i-device" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="9" r="2" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+  </defs></svg>
+  <nav class="language-switch" aria-label="语言切换">
+    <button class="active" type="button" data-lang="zh" aria-pressed="true">中文</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </nav>
+
+  <main class="stage app-story">
+    <aside class="stage-copy"><div class="eyebrow">ilink · Life Between Us</div><h1>让彼此知道，<br>生活正在怎样发生。</h1><div class="rule"></div><p>随口记录一天里的小事，晚上确认 AI 的整理，再把愿意分享的部分发给父母。不是汇报行程，而是给彼此一个真正了解和关心的入口。</p></aside>
+
+    <section class="device" aria-label="ilink 手机 App 可交互原型">
+      <div class="statusbar"><span>9:41</span><span class="status-icons"><i></i><i></i><i></i></span></div>
+      <div class="app capture-mode">
+        <div class="toast" role="status" aria-live="polite">已存入你的私人时间线</div>
+
+        <section class="capture-home" aria-label="语音记录首屏">
+          <header class="capture-brand"><b>ilink</b><span><i></i>Button 已连接</span></header>
+          <div class="capture-center">
+            <small>PRIVATE · 只属于你</small>
+            <h2 data-pretext contenteditable="true">说一句，让彼此更了解。</h2>
+            <p class="capture-state" data-pretext>先记录自己的生活。每天由你确认整理结果，再决定哪些部分可以让家人看到。</p>
+            <div class="hero-waveform" aria-hidden="true"><i style="--h:18px;--i:1;--o:.05"></i><i style="--h:31px;--i:2;--o:.16"></i><i style="--h:48px;--i:3;--o:.26"></i><i style="--h:26px;--i:4;--o:.12"></i><i style="--h:57px;--i:5;--o:.31"></i><i style="--h:38px;--i:6;--o:.2"></i><i style="--h:66px;--i:7;--o:.36"></i><i style="--h:43px;--i:8;--o:.23"></i><i style="--h:25px;--i:9;--o:.11"></i><i style="--h:53px;--i:10;--o:.29"></i><i style="--h:34px;--i:11;--o:.18"></i><i style="--h:61px;--i:12;--o:.34"></i><i style="--h:42px;--i:13;--o:.22"></i><i style="--h:22px;--i:14;--o:.09"></i><i style="--h:48px;--i:15;--o:.26"></i><i style="--h:29px;--i:16;--o:.14"></i><i style="--h:17px;--i:17;--o:.05"></i></div>
+            <div class="intent-examples" aria-label="语音 Agent 示例">
+              <button class="intent-chip" type="button" data-voice-intent="record">“记录我今天开始做新项目”</button>
+            <button class="intent-chip" type="button" data-voice-intent="share">“把我的一天整理成近况给妈妈”</button>
+              <button class="intent-chip" type="button" data-voice-intent="family">“看看爸爸最近怎么样”</button>
+            </div>
+          </div>
+          <button class="capture-skip" type="button">查看我的一天</button>
+        </section>
+
+        <section class="page active" data-page="daily" aria-labelledby="daily-title">
+          <header class="page-header"><div><small>个人空间 · 7 月 18 日</small><h2 id="daily-title" data-pretext contenteditable="true">我</h2></div><button class="avatar avatar-button" type="button" data-action="manage" aria-label="打开个人管理">YK</button></header>
+          <div class="my-view-tabs" aria-label="我的内容"><button class="my-view-tab active" type="button" data-my-view="day">我的一天</button><button class="my-view-tab" type="button" data-my-view="shares">我的分享</button></div>
+          <section class="my-day-view">
+            <p class="daily-intro">ilink 把我今天留下的内容整理成了 4 个生活片段。先确认它有没有理解对，再决定哪些值得和家人分享。</p>
+            <article class="daily-hero"><div class="daily-hero-head"><small>MY DAY · 7 月 18 日</small><span class="daily-status">2 / 4 已确认</span></div><h3 data-pretext contenteditable="true">今天开始把一个想法做成真正的产品，也在普通的买菜和散步里慢了下来。</h3><p>这是属于我的一天。所有内容默认私密，确认前不会用于生成家人近况卡。</p><div class="daily-progress"><i></i></div></article>
+            <div class="section-title"><h3>等待我确认</h3><button type="button" data-action="confirm-day">全部确认</button></div>
+            <div class="organize-list">
+              <article class="organize-card"><div class="organize-head"><span>09:20 · 来自 Button</span><b>待确认</b></div><h4>开始做 ilink 产品原型</h4><p>确定先把记录、我的一天和家庭分享做成完整闭环。</p><div class="organize-meta"><span>AI 整理 · 可修改</span><div class="organize-actions"><button type="button">编辑</button><button class="confirm-record" type="button" data-action="confirm-record">确认</button></div></div></article>
+              <article class="organize-card"><div class="organize-head"><span>15:10 · 来自手机</span><b>待确认</b></div><h4>买菜，也散了会儿步</h4><p>天气很好，走完以后感觉比上午放松了一些。</p><div class="organize-meta"><span>AI 整理 · 可修改</span><div class="organize-actions"><button type="button">编辑</button><button class="confirm-record" type="button" data-action="confirm-record">确认</button></div></div></article>
+              <article class="organize-card confirmed"><div class="organize-head"><span>11:10 · 来自 Button</span><b>已确认</b></div><h4>和 Andy 讨论产品方向</h4><p>决定硬件不在 Hackathon 演示，但保留未来接口。</p><div class="organize-meta"><span>仅自己可见</span><div class="organize-actions"><button type="button">编辑</button><button class="confirm-record" type="button" data-action="confirm-record">✓ 已确认</button></div></div></article>
+              <article class="organize-card confirmed"><div class="organize-head"><span>12:05 · 来自 Button</span><b>已确认</b></div><h4>在家做了午饭</h4><p>吃完以后收拾厨房，给妈妈发了张新菜的照片。</p><div class="organize-meta"><span>仅自己可见</span><div class="organize-actions"><button type="button">编辑</button><button class="confirm-record" type="button" data-action="confirm-record">✓ 已确认</button></div></div></article>
+            </div>
+            <div class="daily-actions"><button type="button" data-nav-jump="capture">继续记录</button><button type="button" data-action="daily-share">生成家人近况卡</button></div>
+            <div class="privacy-note"><svg><use href="#i-lock"/></svg><span>我的一天默认只有我能看到。家人只会收到我最后确认发送的卡片。</span></div>
+          </section>
+          <section class="my-shares-view" hidden>
+            <p class="daily-intro">这里收好我主动分享给妈妈和爸爸的近况。只有最终发送的卡片会出现在这里。</p>
+            <div class="share-stream my-share-stream">
+              <article class="share-entry sent"><div class="share-entry-head"><span class="share-direction">分享给妈妈 · 陈丽</span><span class="share-date">今天 16:52 · 已送达</span></div><h4>今天开始做一个新产品</h4><p>今天开始认真做一个新产品，下午也出去走了走。最近挺充实，周日晚上可以打电话。</p></article>
+              <article class="share-entry sent"><div class="share-entry-head"><span class="share-direction">分享给爸爸 · Yiming</span><span class="share-date">7 月 14 日 · 已读</span></div><h4>Hackathon 准备得差不多了</h4><p>产品方向已经定下来，这几天主要在完善原型和演示流程。</p></article>
+              <article class="share-entry sent"><div class="share-entry-head"><span class="share-direction">分享给妈妈 · 陈丽</span><span class="share-date">7 月 12 日 · 已读</span></div><h4>最近在准备转型</h4><p>开始做一个新产品，方向比上周更清楚。周日晚上有空，可以打电话。</p></article>
+            </div>
+            <div class="privacy-note"><svg><use href="#i-lock"/></svg><span>这里仅显示我已经确认发送的近况卡，不包含我的原始记录或未发送草稿。</span></div>
+          </section>
+        </section>
+
+        <section class="page" data-page="family" aria-labelledby="family-title">
+          <section class="family-list-view">
+            <header class="page-header"><div><small>家人 · 2 位已连接</small><h2 id="family-title" data-pretext contenteditable="true">我们的生活</h2></div><button class="avatar avatar-button" type="button" data-action="manage" aria-label="打开个人管理">YK</button></header>
+            <div class="family-view-tabs" aria-label="家人页视图"><button class="family-view-tab active" type="button" data-family-view="focus">近期关注</button><button class="family-view-tab" type="button" data-family-view="members">家人列表</button></div>
+
+            <section class="family-focus-view">
+              <div class="focus-toolbar"><span>只整理家人主动分享的内容</span><div class="focus-range" aria-label="关注时间范围"><button class="active" type="button" data-family-range="week">最近一周</button><button type="button" data-family-range="month">最近一月</button></div></div>
+              <div class="attention-panel" data-attention-panel="week">
+                <article class="focus-summary"><small>FAMILY BRIEF · 7 月 12–18 日</small><h3>这周有 2 件事值得跟进，也有一些普通但开心的生活。</h3><p>妈妈需要处理厨房水管；爸爸最近再次提到手机电池。两人都保持了出门活动。</p></article>
+                <div class="section-title"><h3>值得你关注</h3><span style="font-size:8px;color:var(--muted)">3 件</span></div>
+                <div class="attention-list">
+                  <button class="attention-card" type="button" data-attention-family="mother"><span class="attention-person">妈</span><span class="attention-copy"><span class="attention-label">需要跟进</span><b>厨房水管漏水，想请你帮忙找师傅</b><p>妈妈希望周六处理，适合今天确认一下时间。</p><span class="attention-source">来自妈妈 · 今天的近况卡</span></span><span class="attention-arrow">›</span></button>
+                  <button class="attention-card" type="button" data-attention-family="father"><span class="attention-person father">爸</span><span class="attention-copy"><span class="attention-label">可以主动帮忙</span><b>手机电池不够用，想换一部简单的新手机</b><p>这个月已经提到两次，可以先帮他挑两个型号。</p><span class="attention-source">来自爸爸 · 2 张近况卡</span></span><span class="attention-arrow">›</span></button>
+                  <button class="attention-card" type="button" data-attention-family="mother"><span class="attention-person">妈</span><span class="attention-copy"><span class="attention-label life">生活变化</span><b>这周跳了两次舞，也见了老朋友</b><p>最近精神不错。下次打电话可以问问新学的舞。</p><span class="attention-source">来自妈妈 · 本周 2 张近况卡</span></span><span class="attention-arrow">›</span></button>
+                </div>
+              </div>
+              <div class="attention-panel" data-attention-panel="month" hidden>
+                <article class="focus-summary"><small>FAMILY BRIEF · 6 月 19 日–7 月 18 日</small><h3>这个月，父母的生活节奏稳定，有 3 件事适合主动问一问。</h3><p>妈妈开始固定去舞蹈课；爸爸出门散步更频繁，同时在考虑换手机；水管问题仍需要落实。</p></article>
+                <div class="section-title"><h3>这个月的重点</h3><span style="font-size:8px;color:var(--muted)">4 件</span></div>
+                <div class="attention-list">
+                  <button class="attention-card" type="button" data-attention-family="mother"><span class="attention-person">妈</span><span class="attention-copy"><span class="attention-label">尚未完成</span><b>厨房水管维修还需要确认师傅</b><p>最新一张卡仍在请求帮助，建议本周完成。</p><span class="attention-source">最近更新 · 今天 10:36</span></span><span class="attention-arrow">›</span></button>
+                  <button class="attention-card" type="button" data-attention-family="father"><span class="attention-person father">爸</span><span class="attention-copy"><span class="attention-label">反复提到</span><b>换手机的想法出现了两次</b><p>核心需求是屏幕大、操作简单、电池耐用。</p><span class="attention-source">来自爸爸 · 7 月 8 日和 16 日</span></span><span class="attention-arrow">›</span></button>
+                  <button class="attention-card" type="button" data-attention-family="mother"><span class="attention-person">妈</span><span class="attention-copy"><span class="attention-label life">新的习惯</span><b>开始固定参加每周舞蹈课</b><p>一个月里分享了 5 次课程或和舞伴见面。</p><span class="attention-source">来自妈妈 · 本月 5 张近况卡</span></span><span class="attention-arrow">›</span></button>
+                  <button class="attention-card" type="button" data-attention-family="father"><span class="attention-person father">爸</span><span class="attention-copy"><span class="attention-label life">保持得不错</span><b>出门散步和整理阳台更频繁</b><p>这是爸爸这个月最常分享的两个日常主题。</p><span class="attention-source">来自爸爸 · 本月 6 张近况卡</span></span><span class="attention-arrow">›</span></button>
+                </div>
+              </div>
+              <p class="focus-note">没有分享不代表异常。ilink 不会根据沉默、少记录或单次情绪自动推断风险。</p>
+            </section>
+
+            <section class="family-members-view" hidden>
+              <p class="family-intro">选择一位家人，查看他主动确认并分享给我的生活近况。</p>
+              <div class="family-list">
+                <button class="family-cell" type="button" data-family="mother"><span class="family-avatar">妈</span><span class="family-cell-copy"><b>妈妈 · 陈丽</b><small>母亲 · 今天 10:36 分享</small><p>厨房水管有点漏，周六能不能帮我看看……</p></span><span class="family-cell-side"><span class="unread">1</span><br>3 张近况卡 ›</span></button>
+                <button class="family-cell" type="button" data-family="father"><span class="family-avatar father">爸</span><span class="family-cell-copy"><b>爸爸 · Yiming</b><small>父亲 · 昨天 19:20 分享</small><p>今天去公园走了走，周末准备整理阳台……</p></span><span class="family-cell-side">2 张近况卡 ›</span></button>
+                <button class="family-add" type="button">＋ 邀请另一位家人</button>
+              </div>
+              <div class="privacy-note"><svg><use href="#i-lock"/></svg><span>每位家人的连接和分享权限彼此独立。你只能看到对方批准的近况卡。</span></div>
+            </section>
+          </section>
+
+          <section class="family-detail-view" hidden>
+            <header class="detail-top"><button class="back-btn" type="button" aria-label="返回家人列表">‹</button><div class="detail-person"><small>家人分享给我</small><h2 class="detail-title">妈妈</h2></div></header>
+            <div class="detail-profile"><span class="family-avatar detail-avatar">妈</span><span class="detail-profile-copy"><b class="detail-name">陈丽 · 母亲</b><span class="detail-status">已连接 4 周 · 最近分享于今天</span></span></div>
+            <div class="section-title"><h3 class="share-list-title">妈妈分享给我的</h3><span style="font-size:8px;color:var(--muted)">仅已批准内容</span></div>
+            <div class="share-stream"></div>
+            <div class="privacy-note"><svg><use href="#i-lock"/></svg><span>这里不是对方的完整生活记录，只包含对方确认并分享给我的内容。</span></div>
+          </section>
+        </section>
+
+        <section class="page" data-page="me" aria-labelledby="me-title">
+          <header class="manage-back"><button class="back-btn" type="button" data-action="close-manage" aria-label="返回">‹</button><div class="detail-person"><small>个人空间</small><h2 id="me-title" data-pretext contenteditable="true">我的 ilink</h2></div><div class="avatar">YK</div></header>
+          <p class="family-intro">管理设备、家人连接和每一条生活数据的边界。</p>
+          <div class="management-stack">
+            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-device"/></svg></span><span class="manage-title"><b>硬件配对管理</b><small>ilink Button 01 · 当前已连接</small></span><button class="manage-action" type="button">管理</button></div><div class="manage-row"><span class="device-dot"></span><span class="manage-row-copy"><b>Button 01</b><small>电量 82% · 刚刚同步 · 待机不录音</small></span><span class="status-pill">已连接</span></div><button class="manage-row" type="button" style="width:100%;border-width:0 0 1px;background:transparent;text-align:left"><span class="manage-row-copy"><b>＋ 配对新设备</b><small>通过蓝牙添加另一枚 ilink Button</small></span><span class="chev">›</span></button></article>
+            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-family"/></svg></span><span class="manage-title"><b>与家人的配对管理</b><small>2 位家人 · 权限彼此独立</small></span><button class="manage-action" type="button">邀请</button></div><div class="manage-row"><span class="family-avatar" style="width:30px;height:30px;font-size:9px">妈</span><span class="manage-row-copy"><b>妈妈 · 陈丽</b><small>双方可见已批准的近况卡</small></span><span class="status-pill">已连接</span></div><div class="manage-row"><span class="family-avatar father" style="width:30px;height:30px;font-size:9px">爸</span><span class="manage-row-copy"><b>爸爸 · Yiming</b><small>双方可见已批准的近况卡</small></span><span class="status-pill">已连接</span></div></article>
+            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-lock"/></svg></span><span class="manage-title"><b>隐私管理</b><small>默认私密 · 分享前逐次确认</small></span><button class="manage-action" type="button">查看</button></div><div class="manage-row"><span class="manage-row-copy"><b>原始语音</b><small>加密保存 30 天，之后自动删除</small></span><span class="status-pill private">仅自己</span></div><div class="manage-row"><span class="manage-row-copy"><b>家人近况卡</b><small>每次生成、编辑并确认后才发送</small></span><span class="status-pill private">逐次确认</span></div><div class="manage-row"><span class="manage-row-copy"><b>数据导出与彻底删除</b><small>管理时间线、录音和分享记录</small></span><span class="chev">›</span></div></article>
+          </div>
+        </section>
+
+        <aside class="record-dock" aria-label="语音记录">
+          <button class="record-control" type="button" aria-label="按住说话，松开结束" aria-pressed="false">
+            <span class="mic-orb"><svg><use href="#i-mic"/></svg></span>
+            <span class="voice-core"><span class="voice-label"><span>按住说话</span><span class="record-time">正在听 · 00:00</span></span><span class="waveform" aria-hidden="true"><i style="--h:5px;--i:1"></i><i style="--h:10px;--i:2"></i><i style="--h:15px;--i:3"></i><i style="--h:8px;--i:4"></i><i style="--h:13px;--i:5"></i><i style="--h:6px;--i:6"></i><i style="--h:16px;--i:7"></i><i style="--h:11px;--i:8"></i><i style="--h:7px;--i:9"></i><i style="--h:14px;--i:10"></i><i style="--h:9px;--i:11"></i><i style="--h:5px;--i:12"></i></span></span>
+            <span class="voice-hint">松开结束<br>上滑取消</span>
+          </button>
+        </aside>
+
+        <nav class="bottom-nav" aria-label="主导航"><button class="nav-btn" data-nav="family"><svg><use href="#i-family"/></svg><span>家人</span></button><button class="nav-btn capture-tab active" data-nav="capture" aria-current="page"><span class="tab-orb"><svg><use href="#i-mic"/></svg></span><span>记录</span></button><button class="nav-btn" data-nav="daily"><svg><use href="#i-me"/></svg><span>我</span></button></nav>
+
+        <div class="sheet-backdrop" aria-hidden="true">
+          <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"><div class="handle"></div><div class="intent-badge">识别为：<span class="intent-kind">记录生活</span></div><h3 id="sheet-title" class="intent-title">我听到的是这样</h3><div class="sheet-sub intent-sub">确认后才会进入你的私人时间线</div><div class="transcript intent-transcript" data-pretext contenteditable="true">“刚读完一篇关于 Agent 的评测文章，大概四十分钟，记下了三个产品想法。”</div><div class="parsed-grid"><div class="parsed"><small class="intent-label-1">活动</small><b class="intent-value-1">阅读 Agent 评测</b></div><div class="parsed"><small class="intent-label-2">时长</small><b class="intent-value-2">估计 · 40 分钟</b></div><div class="parsed"><small class="intent-label-3">主题</small><b class="intent-value-3">AI 学习</b></div><div class="parsed"><small class="intent-label-4">时间</small><b class="intent-value-4">刚刚 · 16:42</b></div></div><div class="sheet-actions"><button type="button" data-action="close-sheet">重新说</button><button class="save intent-primary" type="button" data-action="save-event">存入私人时间线</button></div></section>
+        </div>
+        <div class="sheet-backdrop share-backdrop" aria-hidden="true">
+          <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="share-sheet-title"><div class="handle"></div><h3 id="share-sheet-title">给妈妈的今日近况</h3><div class="sheet-sub">只发送你勾选并确认的内容。原始录音和未确认片段不会分享。</div><div class="share-options"><label class="share-line"><input type="checkbox" checked><span><b>今天在做什么</b><span>开始把 ilink 的想法做成产品，也和 Andy 确定了核心流程。</span></span></label><label class="share-line"><input type="checkbox" checked><span><b>一个生活小片段</b><span>下午去买菜，也散了会儿步，心情比上午放松。</span></span></label><label class="share-line"><input type="checkbox"><span><b>私密候选 · 默认不分享</b><span>今天有一小段时间很焦虑，还没有想好要不要说。</span></span></label></div><div class="share-preview"><b class="share-recipient">妈妈将看到：</b><br>“今天开始认真做一个新产品，下午也出去走了走。最近挺充实，周日晚上可以打电话。”</div><div class="sheet-actions"><button type="button" data-action="close-share">再编辑一下</button><button class="save" type="button" data-action="send-share">确认并发送</button></div></section>
+        </div>
+      </div>
+    </section>
+
+    <aside class="screen-map"><div class="eyebrow">Core relationship loop</div><h3>三个核心入口</h3><div class="map-item" data-map="family"><span class="map-index">01</span><div><b>家人</b><p>先看家人分享给我的重点，再进入妈妈或爸爸的近况。</p></div></div><div class="map-item active" data-map="capture"><span class="map-index">02</span><div><b>记录</b><p>随口留下真实生活，也可以直接发出家人相关指令。</p></div></div><div class="map-item" data-map="daily"><span class="map-index">03</span><div><b>我</b><p>整理我的一天，也能回看我主动分享给家人的内容。</p></div></div><div class="instruction-item" style="margin-top:18px"><b>完整闭环</b><p>记录一句生活，在「我的一天」确认，再生成一张只有家人可见的近况卡。</p></div></aside>
+  </main>
+
+  <main class="hardware-story">
+    <div class="hardware-shell">
+      <header class="hardware-header">
+        <div class="hardware-title">
+          <div class="eyebrow">ilink Glasses · Ambient Capture</div>
+          <h1>生活发生时，<br>眼镜只留下一帧。</h1>
+        </div>
+        <p class="hardware-intro">不要求父母反复打开 App，也不持续录像。眼镜只在预设的生活时刻拍下一张照片，交给 AI 形成候选记录；当天由本人整理、确认，再决定是否分享。</p>
+      </header>
+
+      <section class="hardware-hero" aria-label="智能眼镜与 App 的交互闭环">
+        <figure class="glasses-panel">
+          <img class="glasses-image" src="ilink-smart-glasses.png" alt="轻便的 ilink 智能眼镜，镜框角落带摄像头与隐私指示灯" />
+          <div class="glasses-label camera"><i></i>单帧相机 · 瞬间触发</div>
+          <div class="glasses-label privacy"><i></i>指示灯亮起 · 拍摄可感知</div>
+          <button class="glasses-button" type="button" aria-label="按下眼镜上的记录按钮"></button>
+          <div class="tap-gesture" aria-hidden="true"><svg viewBox="0 0 64 80" fill="#fffaf2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M24 64V29c0-5 2.6-8 6.4-8s6.4 3 6.4 8v17-9c0-4.3 2.2-6.8 5.8-6.8s5.8 2.5 5.8 6.8v10-6.5c0-3.8 2.1-6.1 5.4-6.1 3.2 0 5.2 2.3 5.2 6.1v14.7C59 68 50.2 76 37.6 76 29 76 24 71.8 24 64Z"/><path d="M24 50 17 44c-3.1-2.7-7.4-2.1-9.6 1-2 2.8-1.2 6.4 1.7 8.7L24 66"/></svg><span>按一下记录</span></div>
+          <div class="capture-flash" aria-hidden="true"></div>
+        </figure>
+
+        <section class="loop-panel" aria-label="眼镜到家人分享的五步流程">
+          <header class="loop-head">
+            <div><small>HARDWARE → APP → FAMILY</small><h2>一帧，变成一件值得知道的事</h2></div>
+            <span class="loop-status" role="status" aria-live="polite"><i></i><span class="loop-status-copy">眼镜已连接</span></span>
+          </header>
+          <div class="hardware-flow">
+            <article class="hardware-step"><span class="step-index">01</span><div class="step-copy"><b>特定时刻触发</b><span>出门、到访、开始一项活动等预设情境</span></div><span class="step-chip">眼镜端</span></article>
+            <article class="hardware-step"><span class="step-index">02</span><div class="step-copy"><b>拍下一张照片</b><span>只保留当下的一帧，并附带时间与触发原因</span></div><span class="step-chip">单帧输入</span></article>
+            <article class="hardware-step"><span class="step-index">03</span><div class="step-copy"><b>安全同步到 App</b><span>照片加密传入私人收件箱，原图默认不对家人开放</span></div><span class="step-chip">蓝牙 / Wi-Fi</span></article>
+            <article class="hardware-step"><span class="step-index">04</span><div class="step-copy"><b>AI 整理「我的一天」</b><span>识别人物、地点与事件，生成可修改的生活片段</span></div><span class="step-chip">候选记录</span></article>
+            <article class="hardware-step"><span class="step-index">05</span><div class="step-copy"><b>本人确认，再分享</b><span>选择要让孩子知道的内容，生成一张家人近况卡</span></div><span class="step-chip">Family Card</span></article>
+          </div>
+        </section>
+      </section>
+
+      <section class="trust-bar" aria-label="隐私原则">
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M7 4v6M17 4v6M5 13h6m3 0h5M5 17h4m4 0h6" stroke-linecap="round"/></svg><span><strong>不是 24 小时记录</strong><br>只有预设时刻的一张照片</span></div>
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m3 3 18 18M10.6 10.7a2 2 0 0 0 2.8 2.8M9.5 5.2A10.8 10.8 0 0 1 12 5c5.3 0 8.5 7 8.5 7a14 14 0 0 1-2.3 3.2M6.3 6.3C4.4 7.8 3.5 9.8 3.5 12c0 0 3.2 7 8.5 7 1 0 1.8-.2 2.6-.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>原始素材默认私密</strong><br>家人只看到整理后的卡片</span></div>
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 12.5 10.2 16 17 8M12 2.8l7 3v5.5c0 4.4-2.8 7.5-7 9-4.2-1.5-7-4.6-7-9V5.8z" stroke-linecap="round" stroke-linejoin="round"/></svg><span><strong>分享前本人确认</strong><br>AI 整理，但不替任何人公开生活</span></div>
+      </section>
+      <footer class="hardware-caption"><span><strong>ilink Glasses</strong> 是记录入口；App 才是理解、确认与关系连接的中心。</span><span>Specific moments · One frame · Human approved</span></footer>
+    </div>
+  </main>
+
+  <script type="module">
+    const zhToEn={
+      '让彼此知道，':'Let each other know','生活正在怎样发生。':'how life is unfolding.','随口记录一天里的小事，晚上确认 AI 的整理，再把愿意分享的部分发给父母。不是汇报行程，而是给彼此一个真正了解和关心的入口。':'Capture small moments as they happen. Review what AI organizes, then share only what you choose with family. Not a status report, but a way to truly understand and care for each other.',
+      '三个核心入口':'Three core spaces','家人':'Family','记录':'Record','我':'Me','先看家人分享给我的重点，再进入妈妈或爸爸的近况。':'See what matters in family updates, then open Mom or Dad’s shared moments.','随口留下真实生活，也可以直接发出家人相关指令。':'Speak naturally to record life or ask the agent about family.','整理我的一天，也能回看我主动分享给家人的内容。':'Organize My Day and revisit what I chose to share.','完整闭环':'Complete loop','记录一句生活，在「我的一天」确认，再生成一张只有家人可见的近况卡。':'Record a moment, confirm it in My Day, then create a private family update card.',
+      'Button 已连接':'Button connected','PRIVATE · 只属于你':'PRIVATE · ONLY YOU','说一句，让彼此更了解。':'Say it once. Stay close.','先记录自己的生活。每天由你确认整理结果，再决定哪些部分可以让家人看到。':'Record your life first. Review the daily summary, then choose what family can see.','“记录我今天开始做新项目”':'“Record that I started a new project”','“把我的一天整理成近况给妈妈”':'“Turn My Day into an update for Mom”','“看看爸爸最近怎么样”':'“Show me how Dad has been lately”','查看我的一天':'View My Day','按住说话':'Hold to speak','松开结束':'Release to finish','上滑取消':'Slide up to cancel','正在听 · 00:00':'Listening · 00:00',
+      '个人空间 · 7 月 18 日':'PRIVATE SPACE · JUL 18','我的一天':'My Day','我的分享':'My Shares','等待我确认':'Waiting for me','全部确认':'Confirm all','待确认':'To review','已确认':'Confirmed','编辑':'Edit','确认':'Confirm','继续记录':'Keep recording','生成家人近况卡':'Create family card','近期关注':'What matters','家人列表':'Family members','最近一周':'Past week','最近一月':'Past month','只整理家人主动分享的内容':'Only summarizes what family chose to share','值得你关注':'Worth your attention','我们的生活':'Our lives','管理':'Manage','我的 ilink':'My ilink','硬件配对管理':'Hardware pairing','与家人的配对管理':'Family pairing','隐私管理':'Privacy','查看':'View','邀请':'Invite','已连接':'Connected','逐次确认':'Confirm each time','仅自己':'Only me',
+      '生活发生时，':'As life happens,','眼镜只留下一帧。':'the glasses keep one frame.','不要求父母反复打开 App，也不持续录像。眼镜只在预设的生活时刻拍下一张照片，交给 AI 形成候选记录；当天由本人整理、确认，再决定是否分享。':'No repeated app check-ins and no continuous video. At selected moments, the glasses take one photo for AI to turn into a suggested memory. The wearer reviews it later and decides what to share.','单帧相机 · 瞬间触发':'One-frame camera · moment trigger','指示灯亮起 · 拍摄可感知':'Privacy light · visible capture','按一下记录':'Press to capture','一帧，变成一件值得知道的事':'One frame becomes something worth knowing','眼镜已连接':'Glasses connected','特定时刻触发':'A moment triggers capture','出门、到访、开始一项活动等预设情境':'Leaving home, arriving somewhere, or starting an activity','眼镜端':'On glasses','拍下一张照片':'Take one photo','只保留当下的一帧，并附带时间与触发原因':'Keep one frame with its time and trigger context','单帧输入':'One-frame input','安全同步到 App':'Securely sync to the app','照片加密传入私人收件箱，原图默认不对家人开放':'The photo enters a private encrypted inbox; family cannot see the original','蓝牙 / Wi-Fi':'Bluetooth / Wi-Fi','AI 整理「我的一天」':'AI organizes My Day','识别人物、地点与事件，生成可修改的生活片段':'Recognize people, places, and events to draft an editable moment','候选记录':'Suggested memory','本人确认，再分享':'Review first, then share','选择要让孩子知道的内容，生成一张家人近况卡':'Choose what your child should know and create a family update card','不是 24 小时记录':'Not 24/7 recording','只有预设时刻的一张照片':'One photo only at selected moments','原始素材默认私密':'Originals stay private','家人只看到整理后的卡片':'Family sees only the finished card','分享前本人确认':'The wearer approves sharing','AI 整理，但不替任何人公开生活':'AI organizes. It never publishes someone’s life.','是记录入口；App 才是理解、确认与关系连接的中心。':' is the capture point. The app is where moments are understood, approved, and shared.',
+      '已捕捉 1 帧':'1 frame captured','中文':'中文','语音记录首屏':'Voice capture home','主导航':'Main navigation','语音记录':'Voice recording','智能眼镜与 App 的交互闭环':'Smart glasses and app interaction loop','眼镜到家人分享的五步流程':'Five steps from glasses to family','隐私原则':'Privacy principles','按下眼镜上的记录按钮':'Press the capture button on the glasses'
+    };
+    const enToZh=Object.fromEntries(Object.entries(zhToEn).map(([zh,en])=>[en.trim(),zh]));
+    const languageButtons=[...document.querySelectorAll('[data-lang]')];
+    let currentLanguage='zh',languagePass=false,languageQueued=false;
+    function translateText(root=document.body){
+      const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){return /^(SCRIPT|STYLE|SYMBOL)$/.test(node.parentElement?.tagName)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}});
+      const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+      nodes.forEach(node=>{const value=node.nodeValue||'';const core=value.trim();if(!core)return;const next=(currentLanguage==='en'?zhToEn[core]:enToZh[core]);if(next)node.nodeValue=value.replace(core,next)});
+    }
+    function setLanguage(language){
+      currentLanguage=language==='en'?'en':'zh';languagePass=true;document.documentElement.lang=currentLanguage==='en'?'en':'zh-CN';document.title=currentLanguage==='en'?'ilink · Interactive App Prototype':'ilink · 完整 App 原型';
+      languageButtons.forEach(button=>{const active=button.dataset.lang===currentLanguage;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active))});translateText();
+      const glassesButton=document.querySelector('.glasses-button');glassesButton.setAttribute('aria-label',currentLanguage==='en'?'Press the capture button on the glasses':'按下眼镜上的记录按钮');languagePass=false;
+    }
+    languageButtons.forEach(button=>button.addEventListener('click',()=>setLanguage(button.dataset.lang)));
+    new MutationObserver(()=>{if(languagePass||currentLanguage!=='en'||languageQueued)return;languageQueued=true;requestAnimationFrame(()=>{languageQueued=false;languagePass=true;translateText();languagePass=false})}).observe(document.body,{subtree:true,childList:true,characterData:true});
+
+    const glassesPanel=document.querySelector('.glasses-panel');
+    const glassesButton=document.querySelector('.glasses-button');
+    const loopStatusCopy=document.querySelector('.loop-status-copy');
+    let glassesReset;
+    glassesButton.addEventListener('click',()=>{
+      clearTimeout(glassesReset);glassesPanel.classList.remove('captured');void glassesPanel.offsetWidth;glassesPanel.classList.add('captured');
+      loopStatusCopy.textContent=currentLanguage==='en'?'1 frame captured':'已捕捉 1 帧';
+      glassesReset=setTimeout(()=>{glassesPanel.classList.remove('captured');loopStatusCopy.textContent=currentLanguage==='en'?'Glasses connected':'眼镜已连接'},1500);
+    });
+
+    const pages=[...document.querySelectorAll('.page')];
+    const navs=[...document.querySelectorAll('.nav-btn')];
+    const maps=[...document.querySelectorAll('.map-item')];
+    const app=document.querySelector('.app');
+    const recorder=document.querySelector('.record-control');
+    const recordDock=document.querySelector('.record-dock');
+    const backdrop=document.querySelector('.sheet-backdrop');
+    const shareBackdrop=document.querySelector('.share-backdrop');
+    const toast=document.querySelector('.toast');
+    const timerLabel=document.querySelector('.record-time');
+    const captureState=document.querySelector('.capture-state');
+    let recording=false,timer=null,startedAt=0,processing=false,currentFamily='mother',pendingVoiceIntent='record',lastCorePage='daily',currentFamilyLanding='focus',currentMyView='day';
+
+    const voiceIntents={
+      record:{kind:'记录生活',title:'我听到的是这样',sub:'保存后会进入「我的一天」，仍需由你确认',transcript:'“今天开始做 ilink 产品原型，想先把记录、我的一天和家人分享做通。”',fields:[['发生了什么','开始做 ilink 原型'],['人物','我、Andy'],['可分享程度','默认仅自己'],['时间','刚刚 · 16:42']],primary:'加入我的一天'},
+      share:{kind:'生成分享卡',title:'准备生成一张今日近况',sub:'Agent 只使用你已经确认的生活片段；发送前仍由你编辑',transcript:'“把我今天的生活整理成一张近况卡给妈妈。”',fields:[['分享给','妈妈 · 陈丽'],['时间范围','今天'],['内容来源','4 条生活片段'],['隐私方式','编辑后再发送']],primary:'继续编辑分享卡'},
+      family:{kind:'查看家人信息',title:'准备打开爸爸的近况',sub:'你只能看到爸爸主动批准并分享给你的内容',transcript:'“我想看看爸爸最近怎么样。”',fields:[['家人','爸爸 · Yiming'],['最近分享','昨天 19:20'],['可见内容','2 张近况卡'],['权限','仅对方已批准']],primary:'查看爸爸的近况'}
+    };
+    function setVoiceIntent(intent){
+      const data=voiceIntents[intent]||voiceIntents.record;pendingVoiceIntent=intent in voiceIntents?intent:'record';
+      document.querySelector('.intent-kind').textContent=data.kind;
+      document.querySelector('.intent-title').textContent=data.title;
+      document.querySelector('.intent-sub').textContent=data.sub;
+      document.querySelector('.intent-transcript').textContent=data.transcript;
+      data.fields.forEach((field,index)=>{document.querySelector(`.intent-label-${index+1}`).textContent=field[0];document.querySelector(`.intent-value-${index+1}`).textContent=field[1]});
+      document.querySelector('.intent-primary').textContent=data.primary;
+    }
+    function openIntentSheet(intent){setVoiceIntent(intent);backdrop.classList.add('open');backdrop.setAttribute('aria-hidden','false');document.querySelector('.intent-primary').focus()}
+
+    function showPage(name){
+      pages.forEach(p=>p.classList.toggle('active',p.dataset.page===name));
+      const activePage=pages.find(p=>p.dataset.page===name);if(activePage){activePage.scrollTop=0;requestAnimationFrame(()=>activePage.scrollTop=0)}
+      if(name==='daily'||name==='family')lastCorePage=name;
+      const coreName=name==='me'?'daily':name;
+      navs.forEach(n=>{const on=n.dataset.nav===coreName;n.classList.toggle('active',on);n.toggleAttribute('aria-current',on)});
+      maps.forEach(m=>m.classList.toggle('active',m.dataset.map===coreName));
+      recordDock.hidden=true;
+      if(name==='family')showFamilyList();
+      if(name==='daily')setMyView(currentMyView);
+    }
+    function exitCapture(){app.classList.remove('capture-mode','is-recording','is-processing');document.querySelector('.capture-home').setAttribute('aria-hidden','true')}
+    function enterCapture(){app.classList.add('capture-mode');document.querySelector('.capture-home').setAttribute('aria-hidden','false');recordDock.hidden=false;captureState.textContent='先记录自己的生活。每天由你确认整理结果，再决定哪些部分可以让家人看到。';navs.forEach(n=>{const on=n.dataset.nav==='capture';n.classList.toggle('active',on);n.toggleAttribute('aria-current',on)});maps.forEach(m=>m.classList.toggle('active',m.dataset.map==='capture'))}
+    navs.forEach(n=>n.addEventListener('click',()=>{if(n.dataset.nav==='capture')enterCapture();else{exitCapture();showPage(n.dataset.nav)}}));
+    maps.forEach(m=>m.addEventListener('click',()=>{if(m.dataset.map==='capture')enterCapture();else{exitCapture();showPage(m.dataset.map)}}));
+    document.querySelector('.capture-skip').addEventListener('click',()=>{exitCapture();currentMyView='day';showPage('daily')});
+
+    function updateTime(){const seconds=Math.floor((Date.now()-startedAt)/1000);timerLabel.textContent=`正在听 · 00:${String(seconds).padStart(2,'0')}`}
+    function startRecording(event){
+      if(processing||recording)return;
+      if(event?.button!==undefined&&event.button!==0)return;
+      event?.preventDefault(); recording=true; startedAt=Date.now();
+      app.classList.add('is-recording'); captureState.textContent='正在听你说。松开后，我们先一起确认。';
+      recorder.classList.add('recording'); recorder.setAttribute('aria-pressed','true'); updateTime(); timer=setInterval(updateTime,250);
+      if(event?.pointerId!==undefined)recorder.setPointerCapture?.(event.pointerId);
+    }
+    function finishRecording(event){
+      if(!recording)return; event?.preventDefault(); recording=false; clearInterval(timer); app.classList.remove('is-recording');app.classList.add('is-processing');captureState.textContent='正在把这句话整理成一条生活记录…';recorder.classList.remove('recording'); recorder.classList.add('processing'); recorder.setAttribute('aria-pressed','false'); processing=true; timerLabel.textContent='正在整理你的语音…';
+      setTimeout(()=>{app.classList.remove('is-processing');recorder.classList.remove('processing');processing=false;openIntentSheet('record')},700);
+    }
+    recorder.addEventListener('pointerdown',startRecording);recorder.addEventListener('pointerup',finishRecording);recorder.addEventListener('pointercancel',finishRecording);
+    window.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat&&!backdrop.classList.contains('open')&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){startRecording(e)}});
+    window.addEventListener('keyup',e=>{if(e.code==='Space')finishRecording(e)});
+
+    function closeSheet(){document.activeElement?.blur();backdrop.classList.remove('open');backdrop.setAttribute('aria-hidden','true');captureState.textContent='先记录自己的生活。每天由你确认整理结果，再决定哪些部分可以让家人看到。'}
+    document.querySelector('[data-action="close-sheet"]').addEventListener('click',closeSheet);
+    document.querySelector('[data-action="save-event"]').addEventListener('click',()=>{
+      const intent=pendingVoiceIntent;closeSheet();exitCapture();
+      if(intent==='share'){
+        currentFamily='mother';document.querySelector('#share-sheet-title').textContent='给妈妈的今日近况';document.querySelector('.share-recipient').textContent='妈妈将看到：';shareBackdrop.classList.add('open');shareBackdrop.setAttribute('aria-hidden','false');return;
+      }
+      if(intent==='family'){showPage('family');openFamily('father');return;}
+      currentMyView='day';showPage('daily');toast.textContent='已加入「我的一天」，等待你确认';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200)
+    });
+    document.querySelectorAll('[data-voice-intent]').forEach(chip=>chip.addEventListener('click',()=>{
+      if(processing)return;processing=true;app.classList.add('is-processing');captureState.textContent='正在理解你的意图并准备下一步…';
+      setTimeout(()=>{processing=false;app.classList.remove('is-processing');openIntentSheet(chip.dataset.voiceIntent)},420)
+    }));
+    backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeSheet()});
+    document.querySelectorAll('[data-action="reply"]').forEach(b=>b.addEventListener('click',()=>{toast.textContent='回应已发送给妈妈';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200)}));
+    function openShareEditor(){const recipient=currentFamily==='father'?'爸爸':'妈妈';document.querySelector('#share-sheet-title').textContent=`给${recipient}的今日近况`;document.querySelector('.share-recipient').textContent=`${recipient}将看到：`;shareBackdrop.classList.add('open');shareBackdrop.setAttribute('aria-hidden','false')}
+    document.querySelectorAll('[data-action="share-card"]').forEach(b=>b.addEventListener('click',openShareEditor));
+    document.querySelector('[data-action="daily-share"]').addEventListener('click',()=>{currentFamily='mother';openShareEditor()});
+    document.querySelector('[data-action="close-share"]').addEventListener('click',()=>{shareBackdrop.classList.remove('open');shareBackdrop.setAttribute('aria-hidden','true')});
+    document.querySelector('[data-action="send-share"]').addEventListener('click',()=>{const recipient=currentFamily==='father'?'爸爸':'妈妈';shareBackdrop.classList.remove('open');shareBackdrop.setAttribute('aria-hidden','true');currentMyView='shares';showPage('daily');toast.textContent=`近况卡已发送给${recipient}`;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200)});
+    shareBackdrop.addEventListener('click',e=>{if(e.target===shareBackdrop){shareBackdrop.classList.remove('open');shareBackdrop.setAttribute('aria-hidden','true')}});
+    document.querySelectorAll('[data-action="manage"]').forEach(button=>button.addEventListener('click',()=>showPage('me')));
+    document.querySelector('[data-action="close-manage"]').addEventListener('click',()=>showPage(lastCorePage));
+    document.querySelector('[data-nav-jump="capture"]').addEventListener('click',enterCapture);
+
+    function updateDailyProgress(){
+      const cards=[...document.querySelectorAll('.organize-card')];const confirmed=cards.filter(card=>card.classList.contains('confirmed')).length;
+      document.querySelector('.daily-status').textContent=`${confirmed} / ${cards.length} 已确认`;document.querySelector('.daily-progress i').style.width=`${confirmed/cards.length*100}%`;
+    }
+    function confirmOrganizeCard(card){card.classList.add('confirmed');card.querySelector('.organize-head b').textContent='已确认';card.querySelector('.confirm-record').textContent='✓ 已确认';card.querySelector('.organize-meta>span').textContent='仅自己可见';updateDailyProgress()}
+    document.querySelectorAll('[data-action="confirm-record"]').forEach(button=>button.addEventListener('click',()=>confirmOrganizeCard(button.closest('.organize-card'))));
+    document.querySelector('[data-action="confirm-day"]').addEventListener('click',()=>{document.querySelectorAll('.organize-card').forEach(confirmOrganizeCard);toast.textContent='「我的一天」已全部确认';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800)});
+
+    function setMyView(view){
+      currentMyView=view==='shares'?'shares':'day';
+      document.querySelectorAll('.my-view-tab').forEach(tab=>tab.classList.toggle('active',tab.dataset.myView===currentMyView));
+      document.querySelector('.my-day-view').hidden=currentMyView!=='day';
+      document.querySelector('.my-shares-view').hidden=currentMyView!=='shares';
+      document.querySelector('.page[data-page="daily"]').scrollTop=0;
+    }
+    document.querySelectorAll('.my-view-tab').forEach(tab=>tab.addEventListener('click',()=>setMyView(tab.dataset.myView)));
+
+    const familyListView=document.querySelector('.family-list-view');
+    const familyDetailView=document.querySelector('.family-detail-view');
+    const familyData={
+      mother:{title:'妈妈',avatar:'妈',name:'陈丽 · 母亲',status:'已连接 4 周 · 最近分享于今天',entries:[
+        {direction:'妈妈分享给我',date:'今天 10:36',title:'这个星期挺热闹',body:'去跳了两次舞，也和李阿姨一起吃了午饭。最近精神不错，周末准备整理阳台。',help:'需要帮忙：厨房水管有点漏，希望周六帮忙找一位师傅。'},
+        {direction:'我分享给妈妈',date:'7 月 12 日 · 已读',title:'最近在准备转型',body:'开始做一个新产品，方向比上周更清楚。周日晚上有空，可以打电话。',sent:true},
+        {direction:'妈妈分享给我',date:'7 月 5 日',title:'普通但开心的一周',body:'和老同学见了面，买了两盆新的绿植。下周准备继续去舞蹈课。'}
+      ]},
+      father:{title:'爸爸',avatar:'爸',name:'Yiming · 父亲',status:'已连接 3 周 · 最近分享于昨天',entries:[
+        {direction:'爸爸分享给我',date:'昨天 19:20',title:'今天出门走了走',body:'下午去公园走了一圈，顺路买了阳台需要的工具。周末准备把花架重新整理一下。'},
+        {direction:'我分享给爸爸',date:'7 月 14 日 · 已读',title:'Hackathon 准备得差不多了',body:'产品方向已经定下来，这几天主要在完善原型和演示流程。',sent:true},
+        {direction:'爸爸分享给我',date:'7 月 8 日',title:'想换一部简单的新手机',body:'现在这部手机电池不太够用，想找一部屏幕大、操作简单的。',help:'需要帮忙：有空时帮我挑两三个型号。'}
+      ]}
+    };
+    function setFamilyLanding(view){
+      currentFamilyLanding=view==='members'?'members':'focus';
+      document.querySelectorAll('.family-view-tab').forEach(tab=>tab.classList.toggle('active',tab.dataset.familyView===currentFamilyLanding));
+      document.querySelector('.family-focus-view').hidden=currentFamilyLanding!=='focus';
+      document.querySelector('.family-members-view').hidden=currentFamilyLanding!=='members';
+      document.querySelector('.page[data-page="family"]').scrollTop=0;
+    }
+    function showFamilyList(){familyDetailView.hidden=true;familyListView.hidden=false;setFamilyLanding(currentFamilyLanding);}
+    function renderFamilyEntries(){
+      const member=familyData[currentFamily];
+      const entries=member.entries.filter(entry=>!entry.sent);
+      familyDetailView.querySelector('.share-list-title').textContent=`${member.title}分享给我的`;
+      familyDetailView.querySelector('.share-stream').innerHTML=entries.length?entries.map(entry=>`<article class="share-entry"><div class="share-entry-head"><span class="share-direction">${entry.direction}</span><span class="share-date">${entry.date}</span></div><h4>${entry.title}</h4><p>${entry.body}</p>${entry.help?`<div class="help-line">${entry.help}</div>`:''}</article>`).join(''):'<div class="empty-filter">${member.title}还没有分享近况给我。</div>';
+    }
+    function openFamily(key){
+      const member=familyData[key];if(!member)return;currentFamily=key;
+      familyListView.hidden=true;familyDetailView.hidden=false;
+      familyDetailView.querySelector('.detail-title').textContent=member.title;
+      familyDetailView.querySelector('.detail-avatar').textContent=member.avatar;
+      familyDetailView.querySelector('.detail-avatar').classList.toggle('father',key==='father');
+      familyDetailView.querySelector('.detail-name').textContent=member.name;
+      familyDetailView.querySelector('.detail-status').textContent=member.status;
+      renderFamilyEntries();
+      const familyPage=document.querySelector('.page[data-page="family"]');
+      const resetFamilyScroll=()=>{familyPage.scrollTop=0;window.scrollTo(0,0)};
+      resetFamilyScroll();requestAnimationFrame(resetFamilyScroll);setTimeout(()=>{resetFamilyScroll();familyDetailView.querySelector('.back-btn').focus({preventScroll:true})},80);
+    }
+    document.querySelectorAll('[data-family]').forEach(cell=>cell.addEventListener('click',()=>openFamily(cell.dataset.family)));
+    document.querySelectorAll('.family-view-tab').forEach(tab=>tab.addEventListener('click',()=>setFamilyLanding(tab.dataset.familyView)));
+    document.querySelectorAll('[data-family-range]').forEach(button=>button.addEventListener('click',()=>{const range=button.dataset.familyRange;document.querySelectorAll('[data-family-range]').forEach(item=>item.classList.toggle('active',item===button));document.querySelectorAll('[data-attention-panel]').forEach(panel=>panel.hidden=panel.dataset.attentionPanel!==range);const familyPage=document.querySelector('.page[data-page="family"]');const reset=()=>familyPage.scrollTop=0;button.blur();reset();requestAnimationFrame(reset);setTimeout(reset,60)}));
+    document.querySelectorAll('[data-attention-family]').forEach(card=>card.addEventListener('click',()=>openFamily(card.dataset.attentionFamily)));
+    familyDetailView.querySelector('.back-btn').addEventListener('click',showFamilyList);
+
+    // Pretext card/grid tier: prepare() + layout() when the CDN is reachable.
+    // CSS remains the offline fallback so the file works as a local prototype.
+    try{
+      const {prepare,layout}=await import('https://esm.sh/@chenglou/pretext');
+      await document.fonts.ready;
+      const prepared=new Map();
+      document.querySelectorAll('[data-pretext]').forEach(el=>prepared.set(el,prepare(el.textContent,getComputedStyle(el).font)));
+      const relayout=()=>prepared.forEach((handle,el)=>layout(handle,el.clientWidth,parseFloat(getComputedStyle(el).lineHeight)||18));
+      new ResizeObserver(relayout).observe(document.body);relayout();
+      document.querySelectorAll('[data-pretext][contenteditable=true]').forEach(el=>new MutationObserver(()=>{prepared.set(el,prepare(el.textContent,getComputedStyle(el).font));relayout()}).observe(el,{characterData:true,subtree:true,childList:true}));
+    }catch(error){document.documentElement.dataset.pretext='offline-fallback'}
+  </script>
+</body>
+</html>

@@ -657,7 +657,7 @@
       if(!insforge)throw new Error('AI 摘要服务尚未连接。');
       const cleanTranscript=String(transcript||'').trim();
       if(!cleanTranscript)throw new Error('原文不能为空。');
-      const {data,error}=await insforge.functions.invoke('summarize-entry',{body:{transcript:cleanTranscript,previousSummary:String(previousSummary||'').trim()}});
+      const {data,error}=await insforge.functions.invoke('summarize-entry',{body:{transcript:cleanTranscript,previousSummary:String(previousSummary||'').trim(),language:currentLanguage}});
       if(error||!data?.summary)throw new Error(error?.message||data?.error||'AI 摘要没有生成，请稍后重试。');
       return{summary:data.summary.trim(),model:data.model||null,requestId:data.requestId||null,generatedAt:new Date().toISOString()};
     }
@@ -951,7 +951,7 @@
     maps.forEach(m=>m.addEventListener('click',()=>{if(m.dataset.map==='capture')enterCapture();else{exitCapture();showPage(m.dataset.map)}}));
     document.querySelector('.capture-skip').addEventListener('click',()=>{exitCapture();currentMyView='day';showPage('daily')});
 
-    function updateTime(){const seconds=Math.min(MAX_RECORDING_MS/1000,Math.floor((Date.now()-startedAt)/1000)),minutes=Math.floor(seconds/60),remainder=seconds%60;timerLabel.textContent=`正在录音 · ${String(minutes).padStart(2,'0')}:${String(remainder).padStart(2,'0')}`}
+    function updateTime(){const seconds=Math.min(MAX_RECORDING_MS/1000,Math.floor((Date.now()-startedAt)/1000)),minutes=Math.floor(seconds/60),remainder=seconds%60,label=currentLanguage==='en'?'Recording':'正在录音';timerLabel.textContent=`${label} · ${String(minutes).padStart(2,'0')}:${String(remainder).padStart(2,'0')}`}
     function getRecordingConfig(){
       const options=[
         {mimeType:'audio/webm;codecs=opus',extension:'webm',format:'webm'},

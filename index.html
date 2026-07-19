@@ -495,7 +495,7 @@
     let recording=false,timer=null,startedAt=0,processing=false,currentFamily='mother',pendingVoiceIntent='record',lastCorePage='daily',currentFamilyLanding='focus',currentMyView='day';
     let pointerHeld=false,mediaRecorder=null,mediaStream=null,audioChunks=[],recordingLimitTimer=null,pendingRecording=null;
     let recordingStarting=false,recordingAttempt=0,activeRecordingConfig=null,activePointerId=null,pointerStartY=0,cancelRequested=false,saveInFlight=false;
-    let authHydrated=false,syncedEntries=[],syncedShares=[],editingEntryId=null,activePlayback=null,deferredInstallPrompt=null;
+    let authHydrated=false,syncedEntries=[],syncedShares=[],editingEntryId=null,activePlayback=null,deferredInstallPrompt=null,entryDeleteConfirmTimer=null;
     let pendingSummary=null,summaryInFlight=false,summaryAttempt=0,editorSummaryMeta=null;
     const audioObjectUrls=new Map();
     const activeRecordingTasks=new Set();
@@ -747,13 +747,21 @@
         const audio=new Audio(url);activePlayback={entryId,audio,button};audio.addEventListener('ended',stopPlayback,{once:true});audio.addEventListener('error',()=>{stopPlayback();showToast('录音无法播放，请稍后重试。')},{once:true});await audio.play();button.textContent='暂停';button.classList.add('is-playing');
       }catch(error){button.textContent='播放';showToast(error?.message||'录音无法播放，请稍后重试。')}finally{button.disabled=false}
     }
+    function resetEntryDeleteButton(){
+      clearTimeout(entryDeleteConfirmTimer);entryDeleteConfirmTimer=null;
+      const button=document.querySelector('[data-action="delete-entry"]');button.disabled=false;button.dataset.confirm='';button.textContent='删除';
+    }
+    function armEntryDeleteConfirmation(){
+      const button=document.querySelector('[data-action="delete-entry"]');clearTimeout(entryDeleteConfirmTimer);button.disabled=false;button.dataset.confirm='yes';button.textContent='再次点击确认';
+      entryDeleteConfirmTimer=setTimeout(()=>{if(button.dataset.confirm==='yes')resetEntryDeleteButton()},3200);return button;
+    }
     function openEntryEditor(entryId){
       const entry=syncedEntries.find(item=>item.id===entryId);if(!entry)return;
       editingEntryId=entryId;editorSummaryMeta=null;document.querySelector('.entry-title-input').value=entry.title;document.querySelector('.entry-summary-input').value=entry.ai_summary||'';document.querySelector('.entry-transcript-input').value=entry.transcript;
       const duration=Number(entry.audio_duration_seconds||0);document.querySelector('.entry-audio-meta').textContent=entry.audio_key?`原始录音${duration?` · ${duration.toFixed(1)} 秒`:''}`:'无原始录音';
-      const deleteButton=document.querySelector('[data-action="delete-entry"]');deleteButton.dataset.confirm='';deleteButton.textContent='删除';entryBackdrop.classList.add('open');entryBackdrop.setAttribute('aria-hidden','false');setTimeout(()=>document.querySelector('.entry-title-input').focus(),80);
+      resetEntryDeleteButton();entryBackdrop.classList.add('open');entryBackdrop.setAttribute('aria-hidden','false');setTimeout(()=>document.querySelector('.entry-title-input').focus(),80);
     }
-    function closeEntryEditor(){editingEntryId=null;editorSummaryMeta=null;entryBackdrop.classList.remove('open');entryBackdrop.setAttribute('aria-hidden','true')}
+    function closeEntryEditor(){editingEntryId=null;editorSummaryMeta=null;resetEntryDeleteButton();entryBackdrop.classList.remove('open');entryBackdrop.setAttribute('aria-hidden','true')}
     async function generateEditorSummary(){
       if(!editingEntryId||!requireCurrentUser())return;
       const transcript=document.querySelector('.entry-transcript-input').value.trim(),summaryInput=document.querySelector('.entry-summary-input'),button=document.querySelector('[data-action="editor-summary"]');
@@ -774,10 +782,10 @@
     }
     async function deleteEntry(){
       if(!editingEntryId||!requireCurrentUser())return;const button=document.querySelector('[data-action="delete-entry"]');
-      if(button.dataset.confirm!=='yes'){button.dataset.confirm='yes';button.textContent='再次点击确认';setTimeout(()=>{if(button.dataset.confirm==='yes'){button.dataset.confirm='';button.textContent='删除'}},3200);return}
-      const entry=syncedEntries.find(item=>item.id===editingEntryId);button.disabled=true;button.textContent='删除中…';stopPlayback();
-      const {error}=await insforge.database.from('life_entries').delete().eq('id',editingEntryId).select('id');
-      if(error){button.disabled=false;button.textContent='删除';button.dataset.confirm='';return showToast(error.message||'删除失败，请稍后重试。')}
+      if(button.dataset.confirm!=='yes'){armEntryDeleteConfirmation();return}
+      clearTimeout(entryDeleteConfirmTimer);entryDeleteConfirmTimer=null;const entryId=editingEntryId,entry=syncedEntries.find(item=>item.id===entryId);button.disabled=true;button.textContent='删除中…';stopPlayback();
+      const {data,error}=await insforge.database.from('life_entries').delete().eq('id',entryId).select('id');
+      if(error||!data?.some(row=>String(row.id)===String(entryId))){resetEntryDeleteButton();return showToast(error?.message||'没有删除到这条记录，请同步后再试。')}
       let audioCleanupFailed=false;if(entry?.audio_key){const result=await insforge.storage.from('voice-recordings').remove(entry.audio_key);audioCleanupFailed=Boolean(result.error);releaseAudioUrl(entry.audio_key)}
       closeEntryEditor();await syncPrivateData();showToast(audioCleanupFailed?'文字已删除；原始录音清理失败，请联系支持。':'记录和关联录音已删除。',3800);
     }
@@ -1141,7 +1149,7 @@
       if(action==='summarize-record')void regenerateSavedSummary(card.dataset.entryId,button);
       if(action==='play-record')void toggleEntryPlayback(card.dataset.entryId,button);
       if(action==='edit-record')openEntryEditor(card.dataset.entryId);
-      if(action==='delete-record'){openEntryEditor(card.dataset.entryId);const deleteButton=document.querySelector('[data-action="delete-entry"]');deleteButton.dataset.confirm='yes';deleteButton.textContent='再次点击确认';showToast('请在编辑面板中再次确认删除。')}
+      if(action==='delete-record'){openEntryEditor(card.dataset.entryId);armEntryDeleteConfirmation();showToast('请在编辑面板中再次确认删除。')}
       if(action==='demo-edit')showToast('这是体验示例。登录后可以编辑你自己的真实记录。');
     });
     document.querySelector('.my-share-stream').addEventListener('click',event=>{const button=event.target.closest('[data-action="delete-share"]');if(button)void deleteShare(button.closest('.share-entry'),button)});

@@ -653,13 +653,18 @@
     function actionButton(label,action,className=''){
       const button=document.createElement('button');button.type='button';button.textContent=label;button.dataset.action=action;if(className)button.className=className;return button
     }
-    async function requestAISummary(transcript,previousSummary=''){
+    function inferContentLanguage(text){
+      const value=String(text||''),han=(value.match(/[\u3400-\u9fff]/g)||[]).length,latin=(value.match(/[A-Za-z]/g)||[]).length;
+      if(!han)return'en';if(!latin)return'zh';return han*2>=latin?'zh':'en'
+    }
+    async function requestAISummary(transcript,previousSummary='',language='auto'){
       if(!insforge)throw new Error('AI 摘要服务尚未连接。');
       const cleanTranscript=String(transcript||'').trim();
       if(!cleanTranscript)throw new Error('原文不能为空。');
-      const {data,error}=await insforge.functions.invoke('summarize-entry',{body:{transcript:cleanTranscript,previousSummary:String(previousSummary||'').trim(),language:currentLanguage}});
+      const summaryLanguage=language==='en'||language==='zh'?language:'auto';
+      const {data,error}=await insforge.functions.invoke('summarize-entry',{body:{transcript:cleanTranscript,previousSummary:String(previousSummary||'').trim(),language:summaryLanguage}});
       if(error||!data?.summary)throw new Error(error?.message||data?.error||'AI 摘要没有生成，请稍后重试。');
-      return{summary:data.summary.trim(),model:data.model||null,requestId:data.requestId||null,generatedAt:new Date().toISOString()};
+      return{summary:data.summary.trim(),language:data.language||inferContentLanguage(cleanTranscript),model:data.model||null,requestId:data.requestId||null,generatedAt:new Date().toISOString()};
     }
     function summaryErrorMessage(error){
       const message=error?.message||'';
@@ -903,7 +908,7 @@
       summaryInFlight=true;regenerate.disabled=true;saveButton.disabled=true;regenerate.textContent=previous?'重新生成中…':'AI 总结中…';summaryText.classList.add('is-loading');summaryStatus.classList.remove('error');summaryStatus.textContent='正在从原文提取人物、事件和需要跟进的重点…';
       if(!previous)summaryText.textContent='正在生成 1–2 句话…';setIntentSummaryView('summary');
       try{
-        const result=await requestAISummary(transcript,pendingSummary?.summary||'');if(attempt!==summaryAttempt)return;
+        const result=await requestAISummary(transcript,pendingSummary?.summary||'',pendingRecording.language||'auto');if(attempt!==summaryAttempt)return;
         pendingSummary=result;summaryText.textContent=result.summary;document.querySelector('.intent-value-1').textContent=result.summary.length>24?`${result.summary.slice(0,24)}…`:result.summary;summaryStatus.textContent='已生成 · 可以直接修改，或再次生成不同版本。';
       }catch(error){
         if(attempt!==summaryAttempt)return;if(!pendingSummary)summaryText.textContent='这次没有生成摘要，请点击“重新生成”。';summaryStatus.textContent=summaryErrorMessage(error);summaryStatus.classList.add('error');
@@ -1016,7 +1021,7 @@
         if(!isCurrentRecording(attempt))throw cancelledError();
 
         captureState.textContent='正在进行真实语音转文字…';timerLabel.textContent='AI 正在转写…';
-        const {data:transcription,error:transcriptionError}=await insforge.functions.invoke('transcribe-voice',{body:{audioKey:uploadData.key,format:config.format}});
+        const {data:transcription,error:transcriptionError}=await insforge.functions.invoke('transcribe-voice',{body:{audioKey:uploadData.key,format:config.format,language:'auto'}});
         if(transcriptionError||!transcription?.text)throw new Error(transcriptionError?.message||transcription?.error||'没有识别到文字');
         if(!isCurrentRecording(attempt))throw cancelledError();
         return{
@@ -1025,6 +1030,7 @@
           audioFormat:config.format,
           duration,
           text:transcription.text,
+          language:transcription.language||inferContentLanguage(transcription.text),
           model:transcription.model,
           requestId:transcription.requestId||null,
           cost:transcription.usage?.cost??null

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ilink-shell-v2';
+const CACHE_NAME = 'ilink-shell-v3';
 const APP_ROOT = '/ilink-app-prototype/';
 const SHELL_URLS = [
   APP_ROOT,

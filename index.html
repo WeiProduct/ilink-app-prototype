@@ -145,7 +145,9 @@
     .record-detail{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-top:8px}.record-duration{font-size:7px;color:var(--muted)}
     .organize-actions button[data-action="delete-record"],.share-manage button{color:var(--brick);background:transparent}.organize-actions button.is-playing{color:#fff8ef;background:var(--sage);border-color:var(--sage)}
     .share-manage{display:flex;justify-content:flex-end;margin-top:9px;padding-top:8px;border-top:1px solid rgba(125,142,109,.22)}.share-manage button{min-height:30px;border:1px solid rgba(181,82,67,.24);border-radius:7px;padding:0 10px;font-size:8px;font-weight:700;cursor:pointer}
-    .entry-editor-fields{display:grid;gap:9px}.entry-editor-fields label{display:grid;gap:5px;font-size:8px;color:var(--muted)}.entry-editor-fields input,.entry-editor-fields textarea{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--cream);color:var(--ink);padding:10px 11px;font:10px/1.55 var(--sans)}.entry-editor-fields input{height:44px}.entry-editor-fields textarea{min-height:112px;resize:vertical}.entry-editor-meta{display:flex;justify-content:space-between;gap:12px;margin-top:9px;font-size:7px;color:var(--muted)}.entry-editor-actions{display:grid;grid-template-columns:.8fr 1fr 1.2fr;gap:7px;margin-top:14px}.entry-editor-actions button{min-height:44px;border:1px solid var(--line);border-radius:11px;background:var(--paper);font-size:9px;font-weight:700;cursor:pointer}.entry-editor-actions .danger{border-color:rgba(181,82,67,.35);color:var(--brick)}.entry-editor-actions .save{border-color:var(--brick);background:var(--brick);color:#fff8ef}
+    .sheet{max-height:calc(100% - 12px);overflow-y:auto;overscroll-behavior:contain}.summary-workspace[hidden],.summary-panel[hidden]{display:none}.summary-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 9px}.summary-tabs{display:flex;gap:3px;padding:3px;border-radius:9px;background:var(--paper-2)}.summary-tab{min-height:32px;border:0;border-radius:7px;background:transparent;padding:0 11px;color:var(--muted);font-size:8px;font-weight:700;cursor:pointer}.summary-tab.active{background:var(--paper);color:var(--brick);box-shadow:0 2px 6px rgba(80,58,35,.08)}.summary-regenerate{min-height:32px;border:1px solid rgba(181,82,67,.28);border-radius:8px;background:transparent;color:var(--brick);padding:0 10px;font-size:8px;font-weight:700;cursor:pointer}.summary-panel{border:1px solid #d5ddca;border-radius:12px;background:var(--sage-soft);padding:11px 12px}.summary-kicker{display:block;margin-bottom:5px;color:#657456;font-size:7px;font-weight:700;letter-spacing:.08em}.summary-text{min-height:42px;font-family:var(--serif);font-size:11px;line-height:1.6;color:var(--ink)}.summary-text.is-loading{color:var(--muted);animation:summary-pulse 1s ease-in-out infinite alternate}.summary-status{display:block;margin-top:6px;color:var(--muted);font-size:7px}.summary-status.error{color:var(--brick)}@keyframes summary-pulse{from{opacity:.5}to{opacity:1}}
+    .entry-copy-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:1px 0 6px}.entry-copy-label{font-size:7px;font-weight:700;color:#657456;letter-spacing:.06em}.entry-copy-tabs{display:flex;gap:3px}.entry-copy-tabs button{min-height:27px;border:1px solid var(--line);border-radius:7px;background:transparent;padding:0 8px;color:var(--muted);font-size:7px;font-weight:700;cursor:pointer}.entry-copy-tabs button.active{border-color:#b8c5aa;background:var(--sage-soft);color:#657456}.organize-card .entry-body.summary{font-family:var(--serif);font-size:10px;line-height:1.6}.organize-card .entry-body.original{font-size:9px}.organize-meta{align-items:flex-start}.organize-actions{flex-wrap:wrap;justify-content:flex-end}
+    .entry-editor-fields{display:grid;gap:9px}.entry-editor-fields label{display:grid;gap:5px;font-size:8px;color:var(--muted)}.entry-field-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.entry-field-head button{min-height:29px;border:1px solid rgba(181,82,67,.28);border-radius:7px;background:transparent;color:var(--brick);padding:0 9px;font-size:7px;font-weight:700;cursor:pointer}.entry-editor-fields input,.entry-editor-fields textarea{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--cream);color:var(--ink);padding:10px 11px;font:10px/1.55 var(--sans)}.entry-editor-fields input{height:44px}.entry-editor-fields textarea{min-height:96px;resize:vertical}.entry-summary-input{background:var(--sage-soft)!important;border-color:#d5ddca!important}.entry-editor-meta{display:flex;justify-content:space-between;gap:12px;margin-top:9px;font-size:7px;color:var(--muted)}.entry-editor-actions{display:grid;grid-template-columns:.8fr 1fr 1.2fr;gap:7px;margin-top:14px}.entry-editor-actions button{min-height:44px;border:1px solid var(--line);border-radius:11px;background:var(--paper);font-size:9px;font-weight:700;cursor:pointer}.entry-editor-actions .danger{border-color:rgba(181,82,67,.35);color:var(--brick)}.entry-editor-actions .save{border-color:var(--brick);background:var(--brick);color:#fff8ef}
     .profile-editor{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}.profile-editor input{min-width:0;height:42px;border:1px solid var(--line);border-radius:9px;background:var(--paper);padding:0 11px;color:var(--ink);font-size:10px}.profile-editor button{min-height:42px;border:0;border-radius:9px;background:var(--ink);color:var(--paper);padding:0 12px;font-size:9px;font-weight:700;cursor:pointer}
     .verify-tools{display:flex;justify-content:flex-end;margin-top:7px}.verify-tools button{border:0;background:transparent;color:var(--brick);font-size:8px;font-weight:700;cursor:pointer}
     .manage-row.action-row{width:100%;border-width:0 0 1px;background:transparent;text-align:left;color:inherit;cursor:pointer}.manage-row.action-row:last-child{border-bottom:0}.manage-row.action-row .chev{margin-left:auto}.manage-row.action-row.is-disabled{opacity:.55}
@@ -351,7 +353,7 @@
           <header class="manage-back"><button class="back-btn" type="button" data-action="close-manage" aria-label="返回">‹</button><div class="detail-person"><small>个人空间</small><h2 id="me-title" data-pretext>我的 ilink</h2></div><div class="avatar profile-avatar">IL</div></header>
           <p class="family-intro">管理设备、家人连接和每一条生活数据的边界。</p>
           <div class="management-stack">
-            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-device"/></svg></span><span class="manage-title"><b>硬件配对管理</b><small>产品预览 · 浏览器录音已经可用</small></span><button class="manage-action" type="button" disabled>开发中</button></div><div class="manage-row"><span class="device-dot"></span><span class="manage-row-copy"><b>浏览器麦克风</b><small>按住录音 · OpenAI 真实转写 · InsForge 私密保存</small></span><span class="status-pill">可用</span></div></article>
+            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-device"/></svg></span><span class="manage-title"><b>硬件配对管理</b><small>产品预览 · 浏览器录音已经可用</small></span><button class="manage-action" type="button" disabled>开发中</button></div><div class="manage-row"><span class="device-dot"></span><span class="manage-row-copy"><b>浏览器麦克风</b><small>最长 15 分钟 · OpenAI 真实转写和 AI 摘要 · InsForge 私密保存</small></span><span class="status-pill">可用</span></div></article>
             <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-family"/></svg></span><span class="manage-title"><b>与家人的配对管理</b><small>邀请和跨账号投递仍在开发</small></span><button class="manage-action" type="button" disabled>即将开放</button></div><div class="manage-row"><span class="manage-row-copy"><b>当前为家庭页面体验数据</b><small>不会读取、联系或推断任何真实家人</small></span><span class="status-pill private">预览</span></div></article>
             <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-lock"/></svg></span><span class="manage-title"><b>隐私与数据</b><small>默认私密 · 分享前逐次确认</small></span><button class="manage-action" type="button" data-action="open-auth-profile">账号</button></div><div class="manage-row"><span class="manage-row-copy"><b>原始语音</b><small>私密保存于 InsForge，仅本人登录后可访问</small></span><span class="status-pill private">仅自己</span></div><div class="manage-row"><span class="manage-row-copy"><b>家人近况卡</b><small>每次生成、编辑并确认后才发送</small></span><span class="status-pill private">逐次确认</span></div><button class="manage-row action-row" type="button" data-action="export-data"><span class="manage-row-copy"><b>导出我的数据</b><small>下载生活片段、转写和分享记录的 JSON 副本</small></span><span class="chev">›</span></button><button class="manage-row action-row" type="button" data-action="install-app"><span class="manage-row-copy"><b>安装 ilink Web App</b><small class="install-hint">添加到主屏幕，像 App 一样打开</small></span><span class="chev">›</span></button></article>
           </div>
@@ -368,13 +370,13 @@
         <nav class="bottom-nav" aria-label="主导航"><button class="nav-btn" data-nav="family"><svg><use href="#i-family"/></svg><span>家人</span></button><button class="nav-btn capture-tab active" data-nav="capture" aria-current="page"><span class="tab-orb"><svg><use href="#i-mic"/></svg></span><span>记录</span></button><button class="nav-btn" data-nav="daily"><svg><use href="#i-me"/></svg><span>我</span></button></nav>
 
         <div class="sheet-backdrop" aria-hidden="true">
-          <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"><div class="handle"></div><div class="intent-badge">识别为：<span class="intent-kind">Record a moment</span></div><h3 id="sheet-title" class="intent-title">Here is what I heard</h3><div class="sheet-sub intent-sub">After saving, this enters My Day and still needs your approval</div><div class="transcript intent-transcript" data-pretext contenteditable="true">“I started building the ilink prototype today. I want to connect recording, My Day, and family sharing first.”</div><div class="parsed-grid"><div class="parsed"><small class="intent-label-1">What happened</small><b class="intent-value-1">Started the ilink prototype</b></div><div class="parsed"><small class="intent-label-2">People</small><b class="intent-value-2">Me and Andy</b></div><div class="parsed"><small class="intent-label-3">Sharing</small><b class="intent-value-3">Private by default</b></div><div class="parsed"><small class="intent-label-4">Time</small><b class="intent-value-4">Just now · 16:42</b></div></div><div class="sheet-actions"><button type="button" data-action="close-sheet">重新说</button><button class="save intent-primary" type="button" data-action="save-event">存入私人时间线</button></div></section>
+          <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"><div class="handle"></div><div class="intent-badge">识别为：<span class="intent-kind">Record a moment</span></div><h3 id="sheet-title" class="intent-title">Here is what I heard</h3><div class="sheet-sub intent-sub">After saving, this enters My Day and still needs your approval</div><div class="summary-workspace" hidden><div class="summary-toolbar"><div class="summary-tabs" role="tablist" aria-label="查看 AI 摘要或原文"><button class="summary-tab active" type="button" role="tab" aria-selected="true" data-summary-view="summary">AI 摘要</button><button class="summary-tab" type="button" role="tab" aria-selected="false" data-summary-view="original">原文</button></div><button class="summary-regenerate" type="button" data-action="regenerate-summary">重新生成</button></div><div class="summary-panel"><small class="summary-kicker">AI SUMMARY · 1–2 句话</small><div class="summary-text intent-summary" contenteditable="true" role="textbox" aria-label="AI 摘要"></div><span class="summary-status">AI 只压缩重点，原文和录音都会保留。</span></div></div><div class="transcript intent-transcript" data-pretext contenteditable="true">“I started building the ilink prototype today. I want to connect recording, My Day, and family sharing first.”</div><div class="parsed-grid"><div class="parsed"><small class="intent-label-1">What happened</small><b class="intent-value-1">Started the ilink prototype</b></div><div class="parsed"><small class="intent-label-2">People</small><b class="intent-value-2">Me and Andy</b></div><div class="parsed"><small class="intent-label-3">Sharing</small><b class="intent-value-3">Private by default</b></div><div class="parsed"><small class="intent-label-4">Time</small><b class="intent-value-4">Just now · 16:42</b></div></div><div class="sheet-actions"><button type="button" data-action="close-sheet">重新说</button><button class="save intent-primary" type="button" data-action="save-event">存入私人时间线</button></div></section>
         </div>
         <div class="sheet-backdrop share-backdrop" aria-hidden="true">
           <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="share-sheet-title"><div class="handle"></div><h3 id="share-sheet-title">给妈妈的今日近况</h3><div class="sheet-sub">只使用你勾选并确认的内容。当前版本会把卡片保存到「我的分享」；家人配对上线后才能真正投递。</div><div class="share-options"></div><div class="share-preview"><b class="share-recipient">准备给妈妈：</b><br>请先选择一条已经确认的生活片段。</div><div class="sheet-actions"><button type="button" data-action="close-share">再编辑一下</button><button class="save" type="button" data-action="send-share">确认并保存</button></div></section>
         </div>
         <div class="sheet-backdrop entry-backdrop" aria-hidden="true">
-          <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="entry-editor-title"><div class="handle"></div><h3 id="entry-editor-title">编辑生活片段</h3><div class="sheet-sub">修改会同步到你的 InsForge 私人空间；原始录音不会被改写。</div><div class="entry-editor-fields"><label>标题<input class="entry-title-input" type="text" maxlength="120" autocomplete="off"></label><label>真实转写<textarea class="entry-transcript-input" maxlength="5000"></textarea></label></div><div class="entry-editor-meta"><span class="entry-audio-meta">无原始录音</span><span>仅自己可见</span></div><div class="entry-editor-actions"><button class="danger" type="button" data-action="delete-entry">删除</button><button type="button" data-action="close-entry">取消</button><button class="save" type="button" data-action="save-entry">保存修改</button></div></section>
+          <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="entry-editor-title"><div class="handle"></div><h3 id="entry-editor-title">编辑生活片段</h3><div class="sheet-sub">AI 摘要方便家人快速阅读；真实原文和录音始终保留在你的 InsForge 私人空间。</div><div class="entry-editor-fields"><label>标题<input class="entry-title-input" type="text" maxlength="120" autocomplete="off"></label><label><span class="entry-field-head"><span>AI 摘要 · 1–2 句话</span><button type="button" data-action="editor-summary">重新生成</button></span><textarea class="entry-summary-input" maxlength="1000" placeholder="点击“重新生成”创建简短摘要"></textarea></label><label>真实转写<textarea class="entry-transcript-input" maxlength="20000"></textarea></label></div><div class="entry-editor-meta"><span class="entry-audio-meta">无原始录音</span><span>仅自己可见</span></div><div class="entry-editor-actions"><button class="danger" type="button" data-action="delete-entry">删除</button><button type="button" data-action="close-entry">取消</button><button class="save" type="button" data-action="save-entry">保存修改</button></div></section>
         </div>
       </div>
     </section>
@@ -494,9 +496,10 @@
     let pointerHeld=false,mediaRecorder=null,mediaStream=null,audioChunks=[],recordingLimitTimer=null,pendingRecording=null;
     let recordingStarting=false,recordingAttempt=0,activeRecordingConfig=null,activePointerId=null,pointerStartY=0,cancelRequested=false,saveInFlight=false;
     let authHydrated=false,syncedEntries=[],syncedShares=[],editingEntryId=null,activePlayback=null,deferredInstallPrompt=null;
+    let pendingSummary=null,summaryInFlight=false,summaryAttempt=0,editorSummaryMeta=null;
     const audioObjectUrls=new Map();
     const activeRecordingTasks=new Set();
-    const MAX_RECORDING_MS=60000;
+    const MAX_RECORDING_MS=15*60*1000;
     const CANCEL_SWIPE_PX=58;
 
     const petCompanion=document.querySelector('.pet-companion');
@@ -604,6 +607,20 @@
     function actionButton(label,action,className=''){
       const button=document.createElement('button');button.type='button';button.textContent=label;button.dataset.action=action;if(className)button.className=className;return button
     }
+    async function requestAISummary(transcript,previousSummary=''){
+      if(!insforge)throw new Error('AI 摘要服务尚未连接。');
+      const cleanTranscript=String(transcript||'').trim();
+      if(!cleanTranscript)throw new Error('原文不能为空。');
+      const {data,error}=await insforge.functions.invoke('summarize-entry',{body:{transcript:cleanTranscript,previousSummary:String(previousSummary||'').trim()}});
+      if(error||!data?.summary)throw new Error(error?.message||data?.error||'AI 摘要没有生成，请稍后重试。');
+      return{summary:data.summary.trim(),model:data.model||null,requestId:data.requestId||null,generatedAt:new Date().toISOString()};
+    }
+    function summaryErrorMessage(error){
+      const message=error?.message||'';
+      if(/429|too many/i.test(message))return'生成次数有点多，请过几分钟再试。';
+      if(/timeout/i.test(message))return'AI 总结超时了，请再试一次。';
+      return message||'AI 摘要没有生成，请稍后重试。';
+    }
     function refreshDailyCopy(){
       const intro=document.querySelector('.daily-intro-copy'),summary=document.querySelector('.daily-summary-copy'),note=document.querySelector('.daily-summary-note');
       if(!currentUser){intro.textContent='ilink 把体验内容整理成了 4 个生活片段。登录后，这里只会显示你的真实记录。';summary.textContent='I started turning an idea into a real product today, then slowed down with groceries and an afternoon walk.';note.textContent='这是体验数据，不会上传。真实内容默认私密，只有你能看到。';return}
@@ -622,14 +639,21 @@
         const time=document.createElement('span');time.textContent=`${new Date(entry.occurred_at).toLocaleString('zh-CN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})} · InsForge`;
         const state=document.createElement('b');state.textContent=entry.status==='confirmed'?'已确认':'待确认';head.append(time,state);
         const title=document.createElement('h4');title.textContent=entry.title;
-        const body=document.createElement('p');body.textContent=entry.transcript;
+        const copyHead=document.createElement('div');copyHead.className='entry-copy-head';
+        const copyLabel=document.createElement('span');copyLabel.className='entry-copy-label';copyLabel.textContent=entry.ai_summary?'AI 摘要 · 原文已保留':'真实原文';copyHead.append(copyLabel);
+        if(entry.ai_summary){
+          const tabs=document.createElement('div');tabs.className='entry-copy-tabs';
+          const summaryTab=actionButton('AI 摘要','view-summary');summaryTab.classList.add('active');
+          const originalTab=actionButton('原文','view-original');tabs.append(summaryTab,originalTab);copyHead.append(tabs);
+        }
+        const body=document.createElement('p');body.className=`entry-body ${entry.ai_summary?'summary':'original'}`;body.textContent=entry.ai_summary||entry.transcript;
         const meta=document.createElement('div');meta.className='organize-meta';const metaCopy=document.createElement('span');
         const duration=Number(entry.audio_duration_seconds||0);metaCopy.textContent=entry.audio_key?`含原始录音${duration?` · ${duration.toFixed(1)} 秒`:''} · 仅自己`:'云端文字 · 仅自己';
         const actions=document.createElement('div');actions.className='organize-actions';
         if(entry.audio_key)actions.append(actionButton('播放','play-record'));
-        actions.append(actionButton('编辑','edit-record'),actionButton('删除','delete-record'));
+        actions.append(actionButton(entry.ai_summary?'重新生成':'AI 总结','summarize-record'),actionButton('编辑','edit-record'),actionButton('删除','delete-record'));
         const confirm=actionButton(entry.status==='confirmed'?'✓ 已确认':'确认','confirm-record','confirm-record');confirm.disabled=entry.status==='confirmed';actions.append(confirm);
-        meta.append(metaCopy,actions);card.append(head,title,body,meta);list.append(card);
+        meta.append(metaCopy,actions);card.append(head,title,copyHead,body,meta);list.append(card);
       });
       refreshDailyCopy();updateDailyProgress();
     }
@@ -651,7 +675,7 @@
       if(!insforge||!currentUser)return;
       setSyncState('正在从 InsForge 安全同步你的私人数据…');
       const [entriesResult,sharesResult]=await Promise.all([
-        insforge.database.from('life_entries').select('id,title,transcript,status,occurred_at,created_at,updated_at,audio_key,audio_url,audio_format,audio_duration_seconds,transcription_model,transcription_request_id').order('occurred_at',{ascending:false}).limit(100),
+        insforge.database.from('life_entries').select('id,title,transcript,ai_summary,summary_model,summary_request_id,summary_generated_at,summary_version,status,occurred_at,created_at,updated_at,audio_key,audio_url,audio_format,audio_duration_seconds,transcription_model,transcription_request_id').order('occurred_at',{ascending:false}).limit(100),
         insforge.database.from('family_shares').select('id,recipient_label,title,body,sent_at,created_at').order('sent_at',{ascending:false}).limit(100)
       ]);
       if(entriesResult.error||sharesResult.error){setSyncState('云端同步失败。已加载的内容不会丢失。',true);showToast('云端同步失败，请稍后重试');return}
@@ -725,15 +749,27 @@
     }
     function openEntryEditor(entryId){
       const entry=syncedEntries.find(item=>item.id===entryId);if(!entry)return;
-      editingEntryId=entryId;document.querySelector('.entry-title-input').value=entry.title;document.querySelector('.entry-transcript-input').value=entry.transcript;
+      editingEntryId=entryId;editorSummaryMeta=null;document.querySelector('.entry-title-input').value=entry.title;document.querySelector('.entry-summary-input').value=entry.ai_summary||'';document.querySelector('.entry-transcript-input').value=entry.transcript;
       const duration=Number(entry.audio_duration_seconds||0);document.querySelector('.entry-audio-meta').textContent=entry.audio_key?`原始录音${duration?` · ${duration.toFixed(1)} 秒`:''}`:'无原始录音';
       const deleteButton=document.querySelector('[data-action="delete-entry"]');deleteButton.dataset.confirm='';deleteButton.textContent='删除';entryBackdrop.classList.add('open');entryBackdrop.setAttribute('aria-hidden','false');setTimeout(()=>document.querySelector('.entry-title-input').focus(),80);
     }
-    function closeEntryEditor(){editingEntryId=null;entryBackdrop.classList.remove('open');entryBackdrop.setAttribute('aria-hidden','true')}
+    function closeEntryEditor(){editingEntryId=null;editorSummaryMeta=null;entryBackdrop.classList.remove('open');entryBackdrop.setAttribute('aria-hidden','true')}
+    async function generateEditorSummary(){
+      if(!editingEntryId||!requireCurrentUser())return;
+      const transcript=document.querySelector('.entry-transcript-input').value.trim(),summaryInput=document.querySelector('.entry-summary-input'),button=document.querySelector('[data-action="editor-summary"]');
+      if(!transcript)return showToast('请先保留或填写真实原文。');
+      button.disabled=true;button.textContent=summaryInput.value.trim()?'重新生成中…':'生成中…';
+      try{const result=await requestAISummary(transcript,summaryInput.value.trim());summaryInput.value=result.summary;editorSummaryMeta=result;showToast('新的 AI 摘要已生成，保存后同步。')}
+      catch(error){showToast(summaryErrorMessage(error),3600)}finally{button.disabled=false;button.textContent='重新生成'}
+    }
     async function saveEntryChanges(){
-      if(!editingEntryId||!requireCurrentUser())return;const title=document.querySelector('.entry-title-input').value.trim(),transcript=document.querySelector('.entry-transcript-input').value.trim();
+      if(!editingEntryId||!requireCurrentUser())return;const entry=syncedEntries.find(item=>item.id===editingEntryId),title=document.querySelector('.entry-title-input').value.trim(),transcript=document.querySelector('.entry-transcript-input').value.trim(),summary=document.querySelector('.entry-summary-input').value.trim();
       if(!title||!transcript)return showToast('标题和转写文字都不能为空。');const button=document.querySelector('[data-action="save-entry"]');button.disabled=true;button.textContent='保存中…';
-      const {error}=await insforge.database.from('life_entries').update({title,transcript}).eq('id',editingEntryId).select('id');button.disabled=false;button.textContent='保存修改';
+      const updates={title,transcript,ai_summary:summary||null};
+      if(!summary)Object.assign(updates,{summary_model:null,summary_request_id:null,summary_generated_at:null,summary_version:0});
+      else if(editorSummaryMeta)Object.assign(updates,{summary_model:editorSummaryMeta.model,summary_request_id:editorSummaryMeta.requestId,summary_generated_at:editorSummaryMeta.generatedAt,summary_version:Number(entry?.summary_version||0)+1});
+      else if(summary!==(entry?.ai_summary||''))Object.assign(updates,{summary_model:'manual',summary_request_id:null,summary_generated_at:new Date().toISOString(),summary_version:Number(entry?.summary_version||0)+1});
+      const {error}=await insforge.database.from('life_entries').update(updates).eq('id',editingEntryId).select('id');button.disabled=false;button.textContent='保存修改';
       if(error)return showToast(error.message||'保存失败，请稍后重试。');closeEntryEditor();await syncPrivateData();showToast('修改已安全同步。');
     }
     async function deleteEntry(){
@@ -753,6 +789,7 @@
     }
     entryBackdrop.addEventListener('click',event=>{if(event.target===entryBackdrop)closeEntryEditor()});
     document.querySelector('[data-action="close-entry"]').addEventListener('click',closeEntryEditor);
+    document.querySelector('[data-action="editor-summary"]').addEventListener('click',()=>void generateEditorSummary());
     document.querySelector('[data-action="save-entry"]').addEventListener('click',()=>void saveEntryChanges());
     document.querySelector('[data-action="delete-entry"]').addEventListener('click',()=>void deleteEntry());
 
@@ -764,7 +801,7 @@
           insforge.database.from('family_shares').select('*').order('sent_at',{ascending:false}).limit(1000)
         ]);
         if(entriesResult.error||sharesResult.error)throw new Error(entriesResult.error?.message||sharesResult.error?.message||'数据读取失败');
-        const payload={exported_at:new Date().toISOString(),account:{id:currentUser.id,email:currentUser.email,display_name:userDisplayName()},life_entries:entriesResult.data||[],family_shares:sharesResult.data||[],note:'原始录音仍保存在私人存储中；本导出包含录音元数据和文字转写，不包含音频二进制。'};
+        const payload={exported_at:new Date().toISOString(),account:{id:currentUser.id,email:currentUser.email,display_name:userDisplayName()},life_entries:entriesResult.data||[],family_shares:sharesResult.data||[],note:'原始录音仍保存在私人存储中；本导出包含 AI 摘要、真实转写和录音元数据，不包含音频二进制。'};
         const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=`ilink-data-${new Date().toISOString().slice(0,10)}.json`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);showToast('数据副本已开始下载。');
       }catch(error){showToast(error?.message||'数据导出失败。')}finally{button.disabled=false}
     }
@@ -785,7 +822,13 @@
       share:{kind:'Create an update',title:'Ready to create today’s update',sub:'The agent only uses moments you approved, and you can still edit before sharing',transcript:'“Turn what happened today into an update for Mom.”',fields:[['Share with','Mom · Chen Li'],['Date range','Today'],['Source','4 life moments'],['Privacy','Edit before sharing']],primary:'Continue editing'},
       family:{kind:'View family update',title:'Ready to open Dad’s updates',sub:'You only see content Dad approved and chose to share',transcript:'“Show me how Dad has been lately.”',fields:[['Family member','Dad · Yiming'],['Latest update','Yesterday · 19:20'],['Visible content','2 approved updates'],['Access','Approved by Dad']],primary:'View Dad’s updates'}
     };
+    function resetIntentSummary(){
+      summaryAttempt+=1;pendingSummary=null;summaryInFlight=false;
+      const workspace=document.querySelector('.summary-workspace'),summaryPanel=document.querySelector('.summary-panel'),summaryText=document.querySelector('.intent-summary'),summaryStatus=document.querySelector('.summary-status'),regenerate=document.querySelector('[data-action="regenerate-summary"]'),saveButton=document.querySelector('.intent-primary'),transcript=document.querySelector('.intent-transcript');
+      workspace.hidden=true;summaryPanel.hidden=false;transcript.hidden=false;summaryText.textContent='';summaryText.classList.remove('is-loading');summaryStatus.textContent='AI 只压缩重点，原文和录音都会保留。';summaryStatus.classList.remove('error');regenerate.disabled=false;regenerate.textContent='重新生成';saveButton.disabled=false;
+    }
     function setVoiceIntent(intent){
+      resetIntentSummary();
       const data=voiceIntents[intent]||voiceIntents.record;pendingVoiceIntent=intent in voiceIntents?intent:'record';
       document.querySelector('.intent-kind').textContent=data.kind;
       document.querySelector('.intent-title').textContent=data.title;
@@ -794,26 +837,49 @@
       data.fields.forEach((field,index)=>{document.querySelector(`.intent-label-${index+1}`).textContent=field[0];document.querySelector(`.intent-value-${index+1}`).textContent=field[1]});
       document.querySelector('.intent-primary').textContent=data.primary;
     }
+    function readIntentTranscript(){return document.querySelector('.intent-transcript').textContent.trim().replace(/^“|”$/g,'').trim()}
+    function setIntentSummaryView(view){
+      const showSummary=view!=='original',workspace=document.querySelector('.summary-workspace'),summaryPanel=document.querySelector('.summary-panel'),transcript=document.querySelector('.intent-transcript');
+      workspace.hidden=false;summaryPanel.hidden=!showSummary;transcript.hidden=showSummary;
+      document.querySelectorAll('[data-summary-view]').forEach(button=>{const active=button.dataset.summaryView===(showSummary?'summary':'original');button.classList.toggle('active',active);button.setAttribute('aria-selected',String(active))});
+    }
+    async function generatePendingSummary(){
+      if(summaryInFlight||!pendingRecording)return;
+      const transcript=readIntentTranscript();if(!transcript)return showToast('真实原文不能为空。');
+      const attempt=++summaryAttempt,summaryText=document.querySelector('.intent-summary'),summaryStatus=document.querySelector('.summary-status'),regenerate=document.querySelector('[data-action="regenerate-summary"]'),saveButton=document.querySelector('.intent-primary'),previous=summaryText.textContent.trim();
+      summaryInFlight=true;regenerate.disabled=true;saveButton.disabled=true;regenerate.textContent=previous?'重新生成中…':'AI 总结中…';summaryText.classList.add('is-loading');summaryStatus.classList.remove('error');summaryStatus.textContent='正在从原文提取人物、事件和需要跟进的重点…';
+      if(!previous)summaryText.textContent='正在生成 1–2 句话…';setIntentSummaryView('summary');
+      try{
+        const result=await requestAISummary(transcript,pendingSummary?.summary||'');if(attempt!==summaryAttempt)return;
+        pendingSummary=result;summaryText.textContent=result.summary;document.querySelector('.intent-value-1').textContent=result.summary.length>24?`${result.summary.slice(0,24)}…`:result.summary;summaryStatus.textContent='已生成 · 可以直接修改，或再次生成不同版本。';
+      }catch(error){
+        if(attempt!==summaryAttempt)return;if(!pendingSummary)summaryText.textContent='这次没有生成摘要，请点击“重新生成”。';summaryStatus.textContent=summaryErrorMessage(error);summaryStatus.classList.add('error');
+      }finally{if(attempt===summaryAttempt){summaryInFlight=false;summaryText.classList.remove('is-loading');regenerate.disabled=false;saveButton.disabled=false;regenerate.textContent=pendingSummary?'重新生成':'生成摘要'}}
+    }
     function resetAppScroll(){app.scrollTop=0}
     function openIntentSheet(intent,recordedResult=null){
       setVoiceIntent(intent);
       if(intent==='record'&&recordedResult){
         const cleanText=recordedResult.text.trim();
-        document.querySelector('.intent-sub').textContent='这是从真实录音转写的文字；确认前仍可修改';
+        document.querySelector('.intent-sub').textContent='AI 会先压缩成 1–2 句话；可随时切换回真实原文';
         document.querySelector('.intent-transcript').textContent=`“${cleanText}”`;
-        document.querySelector('.intent-label-1').textContent='真实转写';
-        document.querySelector('.intent-value-1').textContent=cleanText.length>22?`${cleanText.slice(0,22)}…`:cleanText;
+        document.querySelector('.intent-label-1').textContent='AI 摘要';
+        document.querySelector('.intent-value-1').textContent='自动生成中…';
         document.querySelector('.intent-label-2').textContent='录音时长';
         document.querySelector('.intent-value-2').textContent=`${recordedResult.duration.toFixed(1)} 秒`;
         document.querySelector('.intent-label-3').textContent='识别模型';
         document.querySelector('.intent-value-3').textContent=recordedResult.model||'OpenAI 语音转写';
         document.querySelector('.intent-label-4').textContent='存储';
         document.querySelector('.intent-value-4').textContent='InsForge · 仅自己';
+        document.querySelector('.intent-primary').textContent='保存摘要和原文';
+        setIntentSummaryView('summary');void generatePendingSummary();
       }
       resetAppScroll();backdrop.classList.add('open');backdrop.setAttribute('aria-hidden','false');
       document.querySelector('.intent-primary').focus({preventScroll:true});
       requestAnimationFrame(resetAppScroll);
     }
+    document.querySelectorAll('[data-summary-view]').forEach(button=>button.addEventListener('click',()=>setIntentSummaryView(button.dataset.summaryView)));
+    document.querySelector('[data-action="regenerate-summary"]').addEventListener('click',()=>void generatePendingSummary());
 
     function showPage(name){
       pages.forEach(p=>p.classList.toggle('active',p.dataset.page===name));
@@ -832,7 +898,7 @@
     maps.forEach(m=>m.addEventListener('click',()=>{if(m.dataset.map==='capture')enterCapture();else{exitCapture();showPage(m.dataset.map)}}));
     document.querySelector('.capture-skip').addEventListener('click',()=>{exitCapture();currentMyView='day';showPage('daily')});
 
-    function updateTime(){const seconds=Math.min(60,Math.floor((Date.now()-startedAt)/1000));timerLabel.textContent=`正在录音 · 00:${String(seconds).padStart(2,'0')}`}
+    function updateTime(){const seconds=Math.min(MAX_RECORDING_MS/1000,Math.floor((Date.now()-startedAt)/1000)),minutes=Math.floor(seconds/60),remainder=seconds%60;timerLabel.textContent=`正在录音 · ${String(minutes).padStart(2,'0')}:${String(remainder).padStart(2,'0')}`}
     function getRecordingConfig(){
       const options=[
         {mimeType:'audio/webm;codecs=opus',extension:'webm',format:'webm'},
@@ -864,6 +930,7 @@
     }
     async function discardPendingRecording(){
       const recordingToDelete=pendingRecording;pendingRecording=null;
+      resetIntentSummary();
       await removeAudioKey(recordingToDelete?.audioKey);
     }
     function cancelActiveRecording(message=''){
@@ -944,7 +1011,7 @@
     }
     async function finishRecording(event,reachedLimit=false){
       pointerHeld=false;if(!recording||!mediaRecorder)return;event?.preventDefault();
-      recording=false;clearInterval(timer);clearTimeout(recordingLimitTimer);app.classList.remove('is-recording');app.classList.add('is-processing');captureState.textContent=reachedLimit?'已达到 60 秒上限，正在处理…':'正在处理真实录音…';recorder.classList.remove('recording');recorder.classList.add('processing');recorder.setAttribute('aria-pressed','false');processing=true;timerLabel.textContent='正在准备音频…';
+      recording=false;clearInterval(timer);clearTimeout(recordingLimitTimer);app.classList.remove('is-recording');app.classList.add('is-processing');captureState.textContent=reachedLimit?'已达到 15 分钟上限，正在处理…':'正在处理真实录音…';recorder.classList.remove('recording');recorder.classList.add('processing');recorder.setAttribute('aria-pressed','false');processing=true;timerLabel.textContent='正在准备音频…';
       const attempt=recordingAttempt,user=currentUser,duration=Math.min(MAX_RECORDING_MS,Date.now()-startedAt)/1000;
       const recorderInstance=mediaRecorder,streamInstance=mediaStream,chunks=audioChunks,startedConfig=activeRecordingConfig||getRecordingConfig();
       try{
@@ -981,7 +1048,7 @@
     window.addEventListener('pagehide',()=>cancelActiveRecording());
     document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelActiveRecording()});
 
-    function closeSheet(){document.activeElement?.blur();resetAppScroll();backdrop.classList.remove('open');backdrop.setAttribute('aria-hidden','true');captureState.textContent='先记录自己的生活。每天由你确认整理结果，再决定哪些部分可以让家人看到。'}
+    function closeSheet(){document.activeElement?.blur();resetIntentSummary();resetAppScroll();backdrop.classList.remove('open');backdrop.setAttribute('aria-hidden','true');captureState.textContent='先记录自己的生活。每天由你确认整理结果，再决定哪些部分可以让家人看到。'}
     document.querySelector('[data-action="close-sheet"]').addEventListener('click',()=>{if(saveInFlight)return;void discardPendingRecording();closeSheet()});
     document.querySelector('[data-action="save-event"]').addEventListener('click',async()=>{
       if(saveInFlight)return;
@@ -991,16 +1058,17 @@
       }
       if(intent==='family'){closeSheet();exitCapture();showPage('family');openFamily('father');return;}
       if(!requireCurrentUser())return;
-      const transcript=document.querySelector('.intent-transcript').textContent.trim().replace(/^“|”$/g,'');
+      const transcript=readIntentTranscript();
       if(!transcript){showToast('转写文字不能为空');return}
-      const title=transcript.length>36?`${transcript.slice(0,36)}…`:transcript,saveButton=document.querySelector('[data-action="save-event"]');
+      const summaryText=document.querySelector('.intent-summary').textContent.trim(),summary=pendingSummary?summaryText:'',titleSource=summary||transcript,title=titleSource.length>36?`${titleSource.slice(0,36)}…`:titleSource,saveButton=document.querySelector('[data-action="save-event"]');
       saveInFlight=true;saveButton.disabled=true;
       try{
         const row={title,transcript,status:'draft'};
+        if(summary)Object.assign(row,{ai_summary:summary,summary_model:pendingSummary&&summary===pendingSummary.summary?pendingSummary.model:'manual',summary_request_id:pendingSummary&&summary===pendingSummary.summary?pendingSummary.requestId:null,summary_generated_at:pendingSummary?.generatedAt||new Date().toISOString(),summary_version:1});
         if(pendingRecording){Object.assign(row,{audio_url:pendingRecording.audioUrl,audio_key:pendingRecording.audioKey,audio_format:pendingRecording.audioFormat,audio_duration_seconds:pendingRecording.duration,transcription_model:pendingRecording.model,transcription_request_id:pendingRecording.requestId,transcription_cost_usd:pendingRecording.cost})}
         const {error}=await insforge.database.from('life_entries').insert([row]).select();
         if(error){showToast('保存失败，请稍后重试');return}
-        pendingRecording=null;closeSheet();exitCapture();currentMyView='day';showPage('daily');await syncPrivateData();showToast('真实录音和文字已存入私人时间线')
+        pendingRecording=null;closeSheet();exitCapture();currentMyView='day';showPage('daily');await syncPrivateData();showToast(summary?'AI 摘要、真实原文和录音已安全保存':'真实录音和原文已保存；稍后可在“我的一天”生成摘要',4200)
       }catch(error){showToast(error?.message||'保存失败，请稍后重试')}finally{saveInFlight=false;saveButton.disabled=false}
     });
     document.querySelectorAll('[data-voice-intent]').forEach(chip=>chip.addEventListener('click',()=>{
@@ -1009,9 +1077,10 @@
     }));
     backdrop.addEventListener('click',e=>{if(e.target===backdrop&&!saveInFlight){void discardPendingRecording();closeSheet()}});
     document.querySelectorAll('[data-action="reply"]').forEach(b=>b.addEventListener('click',()=>{toast.textContent='回应已发送给妈妈';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200)}));
+    function entryShareText(entry){return entry?.ai_summary||entry?.transcript||''}
     function refreshSharePreview(){
       const recipient=currentFamily==='father'?'爸爸':'妈妈',preview=document.querySelector('.share-preview');
-      const selected=[...document.querySelectorAll('.share-options input:checked')].map(input=>input.dataset.entryId? (syncedEntries.find(entry=>entry.id===input.dataset.entryId)?.transcript||''):input.closest('.share-line')?.querySelector('span span')?.textContent||'').filter(Boolean);
+      const selected=[...document.querySelectorAll('.share-options input:checked')].map(input=>input.dataset.entryId?entryShareText(syncedEntries.find(entry=>entry.id===input.dataset.entryId)):input.closest('.share-line')?.querySelector('span span')?.textContent||'').filter(Boolean);
       const body=selected.join('；').slice(0,600);preview.textContent='';const label=document.createElement('b');label.className='share-recipient';label.textContent=`准备给${recipient}：`;preview.append(label,document.createElement('br'),document.createTextNode(body?`“${body}”`:'请至少选择一条已经确认的生活片段。'));
       document.querySelector('[data-action="send-share"]').disabled=!body;
       return body;
@@ -1020,7 +1089,7 @@
       const recipient=currentFamily==='father'?'爸爸':'妈妈';
       if(!currentUser){openAuth();setAuthStatus('请先登录，再用已确认的真实记录生成近况卡。');return}
       const confirmed=syncedEntries.filter(entry=>entry.status==='confirmed').slice(0,6);if(!confirmed.length){showToast('请先确认至少一条真实记录，再生成家人近况卡。',3600);return}
-      const options=document.querySelector('.share-options');options.textContent='';confirmed.forEach(entry=>{const label=document.createElement('label');label.className='share-line';const input=document.createElement('input');input.type='checkbox';input.checked=true;input.dataset.entryId=entry.id;const copy=document.createElement('span'),title=document.createElement('b'),body=document.createElement('span');title.textContent=entry.title;body.textContent=entry.transcript;copy.append(title,body);label.append(input,copy);options.append(label)});
+      const options=document.querySelector('.share-options');options.textContent='';confirmed.forEach(entry=>{const label=document.createElement('label');label.className='share-line';const input=document.createElement('input');input.type='checkbox';input.checked=true;input.dataset.entryId=entry.id;const copy=document.createElement('span'),title=document.createElement('b'),body=document.createElement('span');title.textContent=entry.ai_summary?'AI 摘要 · 原文保留':entry.title;body.textContent=entryShareText(entry);copy.append(title,body);label.append(input,copy);options.append(label)});
       document.querySelector('#share-sheet-title').textContent=`给${recipient}的今日近况`;refreshSharePreview();shareBackdrop.classList.add('open');shareBackdrop.setAttribute('aria-hidden','false')
     }
     document.querySelectorAll('[data-action="share-card"]').forEach(b=>b.addEventListener('click',openShareEditor));
@@ -1044,6 +1113,21 @@
       const cards=[...document.querySelectorAll(currentUser?'.organize-card.backend-generated':'.organize-card.demo-data')],confirmed=cards.filter(card=>card.classList.contains('confirmed')).length,total=cards.length;
       document.querySelector('.daily-status').textContent=total?`${confirmed} / ${total} 已确认`:'等待第一条记录';document.querySelector('.daily-progress i').style.width=`${total?confirmed/total*100:0}%`;
     }
+    function setEntryCardView(card,view){
+      const entry=syncedEntries.find(item=>item.id===card?.dataset.entryId);if(!entry)return;
+      const showOriginal=view==='original'||!entry.ai_summary,body=card.querySelector('.entry-body'),label=card.querySelector('.entry-copy-label');
+      body.textContent=showOriginal?entry.transcript:entry.ai_summary;body.classList.toggle('summary',!showOriginal);body.classList.toggle('original',showOriginal);label.textContent=showOriginal?'真实原文':'AI 摘要 · 原文已保留';
+      card.querySelectorAll('.entry-copy-tabs button').forEach(button=>button.classList.toggle('active',button.dataset.action===(showOriginal?'view-original':'view-summary')));
+    }
+    async function regenerateSavedSummary(entryId,button){
+      if(!requireCurrentUser())return;const entry=syncedEntries.find(item=>item.id===entryId);if(!entry)return;
+      button.disabled=true;const originalLabel=button.textContent;button.textContent=entry.ai_summary?'重新生成中…':'AI 总结中…';
+      try{
+        const result=await requestAISummary(entry.transcript,entry.ai_summary||'');
+        const {error}=await insforge.database.from('life_entries').update({ai_summary:result.summary,summary_model:result.model,summary_request_id:result.requestId,summary_generated_at:result.generatedAt,summary_version:Number(entry.summary_version||0)+1}).eq('id',entryId).select('id');
+        if(error)throw new Error(error.message||'摘要保存失败。');await syncPrivateData();showToast(entry.ai_summary?'已重新生成一个摘要版本。':'AI 摘要已生成，原文仍完整保留。');
+      }catch(error){showToast(summaryErrorMessage(error),3800)}finally{button.disabled=false;button.textContent=originalLabel}
+    }
     async function confirmOrganizeCard(card){
       if(card.classList.contains('confirmed'))return;
       if(card.dataset.entryId){if(!requireCurrentUser())return;const {error}=await insforge.database.from('life_entries').update({status:'confirmed'}).eq('id',card.dataset.entryId).select('id');if(error){showToast('确认状态同步失败');return}const entry=syncedEntries.find(item=>item.id===card.dataset.entryId);if(entry)entry.status='confirmed'}
@@ -1052,6 +1136,9 @@
     document.querySelector('.organize-list').addEventListener('click',event=>{
       const button=event.target.closest('[data-action]');if(!button)return;const card=button.closest('.organize-card'),action=button.dataset.action;
       if(action==='confirm-record')void confirmOrganizeCard(card);
+      if(action==='view-summary')setEntryCardView(card,'summary');
+      if(action==='view-original')setEntryCardView(card,'original');
+      if(action==='summarize-record')void regenerateSavedSummary(card.dataset.entryId,button);
       if(action==='play-record')void toggleEntryPlayback(card.dataset.entryId,button);
       if(action==='edit-record')openEntryEditor(card.dataset.entryId);
       if(action==='delete-record'){openEntryEditor(card.dataset.entryId);const deleteButton=document.querySelector('[data-action="delete-entry"]');deleteButton.dataset.confirm='yes';deleteButton.textContent='再次点击确认';showToast('请在编辑面板中再次确认删除。')}

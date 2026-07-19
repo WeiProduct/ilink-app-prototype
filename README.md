@@ -12,10 +12,12 @@ The app uses InsForge for:
 - outbound family-card persistence and deletion
 - row-level security so users can only access their own records
 - authenticated edge functions for OpenAI speech-to-text
+- authenticated one- or two-sentence AI summaries with original-transcript switching and regeneration
 - an authenticated OpenAI product assistant presented as the “小连” electronic pet
 
 The OpenAI key is stored only as an InsForge server secret and is never shipped to the browser.
-The assistant answers product questions but cannot read a user's private records. Family delivery,
+The summary function only processes the transcript explicitly sent by the signed-in user, while the
+assistant answers product questions and cannot read a user's private records. Family delivery,
 hardware pairing, and smart-glasses capture remain clearly labeled product previews.
 
 Copy `.env.example` to `.env.local` and provide the project URL and public anon key before running locally.

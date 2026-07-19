@@ -123,6 +123,7 @@ export default async function summarizeEntry(req: Request): Promise<Response> {
     const body = await req.json().catch(() => null);
     const transcript = normalizeText(body?.transcript, MAX_TRANSCRIPT_CHARACTERS);
     const previousSummary = normalizeText(body?.previousSummary, 1000);
+    const language = body?.language === 'en' ? 'en' : 'zh';
     if (!transcript) return json(req, { error: 'Invalid transcript' }, 400);
 
     const openAIKey = Deno.env.get('OPENAI_API_KEY');
@@ -144,7 +145,7 @@ export default async function summarizeEntry(req: Request): Promise<Response> {
       body: JSON.stringify({
         model,
         reasoning: { effort: 'none' },
-        instructions: summaryInstructions,
+        instructions: `${summaryInstructions}\n- Output language: ${language === 'en' ? 'English' : 'Simplified Chinese'}. Follow this requirement even when the transcript is mixed-language.`,
         input,
         max_output_tokens: 180,
         store: false,

@@ -1,6 +1,10 @@
-const CACHE_NAME = 'ilink-shell-v1';
+const CACHE_NAME = 'ilink-shell-v2';
 const APP_ROOT = '/ilink-app-prototype/';
-const SHELL_URLS = [APP_ROOT, `${APP_ROOT}manifest.webmanifest`];
+const SHELL_URLS = [
+  APP_ROOT,
+  `${APP_ROOT}manifest.webmanifest`,
+  `${APP_ROOT}ilink-xiaolian.png`,
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_URLS)));

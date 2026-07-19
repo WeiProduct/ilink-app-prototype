@@ -152,8 +152,34 @@
     .preview-note{border-left:3px solid var(--gold);border-radius:0 10px 10px 0;background:var(--paper-2);padding:9px 10px;margin:-4px 0 13px;font-size:8px;line-height:1.5;color:var(--muted)}.preview-note b{color:var(--ink)}
     .network-note{position:absolute;z-index:25;left:50%;top:6px;transform:translateX(-50%);border-radius:99px;background:var(--ink);color:var(--paper);padding:6px 10px;font-size:7px;font-weight:700;box-shadow:0 5px 14px rgba(44,41,37,.18)}
     @media(max-width:520px){.entry-editor-actions{grid-template-columns:1fr 1fr}.entry-editor-actions .save{grid-column:1/-1;grid-row:1}.network-note{top:4px}}
+
+    .pet-companion{position:fixed;z-index:120;right:22px;bottom:22px;display:flex;align-items:flex-end;flex-direction:column;pointer-events:none}
+    .pet-launch{position:relative;display:flex;align-items:center;gap:8px;min-width:76px;height:78px;padding:0 8px 0 3px;border:1px solid rgba(95,87,78,.18);border-radius:999px;background:rgba(255,250,242,.94);box-shadow:0 14px 38px rgba(55,43,32,.18);backdrop-filter:blur(18px);cursor:pointer;pointer-events:auto;transition:transform .2s,box-shadow .2s}
+    .pet-launch:hover{transform:translateY(-2px);box-shadow:0 18px 44px rgba(55,43,32,.22)}
+    .pet-launch-art{width:70px;height:70px;display:grid;place-items:center;animation:pet-float 3.4s ease-in-out infinite}
+    .pet-launch img{width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 5px 6px rgba(60,43,29,.14));transform-origin:50% 82%}
+    .pet-launch-copy{display:grid;gap:2px;padding-right:7px;text-align:left;white-space:nowrap}.pet-launch-copy b{font-family:var(--serif);font-size:11px}.pet-launch-copy span{font-size:7px;color:var(--muted)}
+    .pet-online-dot{position:absolute;right:8px;top:8px;width:9px;height:9px;border:2px solid var(--paper);border-radius:50%;background:var(--sage);box-shadow:0 0 0 3px rgba(125,142,109,.13)}
+    .pet-chat{position:absolute;right:0;bottom:90px;width:min(370px,calc(100vw - 28px));height:min(550px,calc(100vh - 132px));display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;border:1px solid var(--line);border-radius:25px 25px 7px 25px;background:rgba(255,250,242,.98);box-shadow:0 28px 80px rgba(39,31,24,.25);backdrop-filter:blur(22px);overflow:hidden;opacity:0;transform:translateY(16px) scale(.97);transform-origin:bottom right;pointer-events:none;visibility:hidden;transition:opacity .2s,transform .25s,visibility .25s}
+    .pet-companion.is-open .pet-chat{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;visibility:visible}
+    .pet-companion.is-open .pet-launch-copy{display:none}.pet-companion.is-open .pet-launch{width:70px;min-width:70px;padding:0}
+    .pet-chat-head{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,var(--paper),var(--sage-soft))}
+    .pet-chat-avatar{width:47px;height:47px;display:grid;place-items:center;flex:0 0 auto;border-radius:15px;background:rgba(255,255,255,.52)}.pet-chat-avatar img{width:45px;height:45px;object-fit:contain}
+    .pet-chat-title{min-width:0;flex:1}.pet-chat-title b{display:block;font-family:var(--serif);font-size:14px;margin-bottom:3px}.pet-chat-status{display:flex;align-items:center;gap:6px;font-size:8px;color:var(--muted)}.pet-chat-status i{width:6px;height:6px;border-radius:50%;background:var(--sage)}
+    .pet-close{width:38px;height:38px;border:1px solid rgba(95,87,78,.15);border-radius:50%;background:rgba(255,250,242,.72);font-size:20px;cursor:pointer}
+    .pet-messages{display:flex;flex-direction:column;gap:9px;padding:14px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+    .pet-message{max-width:86%;padding:10px 12px;border-radius:15px;font-size:10px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.pet-message.assistant{align-self:flex-start;border:1px solid var(--line);border-radius:4px 15px 15px 15px;background:var(--paper)}.pet-message.user{align-self:flex-end;border-radius:15px 4px 15px 15px;background:var(--brick);color:#fff8ef}.pet-message.error{color:var(--brick);background:var(--paper-2)}
+    .pet-thinking{align-self:flex-start;display:none;align-items:center;gap:5px;padding:10px 13px;border:1px solid var(--line);border-radius:4px 15px 15px 15px;background:var(--paper)}.pet-thinking i{width:5px;height:5px;border-radius:50%;background:var(--sage);animation:pet-dot .9s ease-in-out infinite}.pet-thinking i:nth-child(2){animation-delay:.14s}.pet-thinking i:nth-child(3){animation-delay:.28s}.pet-companion[data-state="thinking"] .pet-thinking{display:flex}
+    .pet-suggestions{display:flex;gap:6px;padding:0 14px 10px;overflow-x:auto;scrollbar-width:none}.pet-suggestions::-webkit-scrollbar{display:none}.pet-suggestion{flex:0 0 auto;min-height:34px;padding:0 10px;border:1px solid var(--line);border-radius:99px;background:var(--cream);color:var(--ink-2);font-size:8px;cursor:pointer}.pet-suggestion:hover{border-color:var(--brick);color:var(--brick)}
+    .pet-form-wrap{padding:10px 12px 12px;border-top:1px solid var(--line);background:var(--paper)}.pet-form{display:grid;grid-template-columns:minmax(0,1fr) 42px;gap:7px}.pet-input{min-width:0;height:42px;border:1px solid var(--line);border-radius:12px;background:var(--cream);padding:0 12px;color:var(--ink);font-size:10px}.pet-send{width:42px;height:42px;border:0;border-radius:12px;background:var(--brick);color:#fff8ef;font-size:17px;font-weight:700;cursor:pointer}.pet-send:disabled{background:var(--muted)}
+    .pet-privacy{display:flex;align-items:center;gap:5px;margin:7px 2px 0;color:var(--muted);font-size:7px;line-height:1.35}.pet-privacy:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--sage)}
+    .pet-companion[data-state="thinking"] .pet-launch img{animation:pet-think .74s ease-in-out infinite alternate}.pet-companion[data-state="thinking"] .pet-online-dot{animation:pet-pulse 1s infinite}
+    .pet-companion[data-state="answering"] .pet-launch img{animation:pet-hop .65s ease}.pet-companion[data-state="error"] .pet-launch img{animation:pet-wiggle .38s ease 2}
+    @keyframes pet-float{0%,100%{transform:translateY(1px)}50%{transform:translateY(-4px)}}@keyframes pet-think{from{transform:rotate(-2deg) scale(.98)}to{transform:rotate(2deg) scale(1.03)}}@keyframes pet-hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-9px) rotate(-3deg)}70%{transform:translateY(-2px) rotate(2deg)}}@keyframes pet-wiggle{0%,100%{transform:rotate(0)}33%{transform:rotate(-5deg)}66%{transform:rotate(5deg)}}@keyframes pet-dot{0%,100%{transform:translateY(0);opacity:.35}50%{transform:translateY(-3px);opacity:1}}@keyframes pet-pulse{0%,100%{box-shadow:0 0 0 3px rgba(125,142,109,.13)}50%{box-shadow:0 0 0 7px rgba(125,142,109,.04)}}
+    @media(max-width:520px){.pet-companion{right:11px;bottom:calc(155px + var(--safe-bottom))}.pet-launch{height:68px;min-width:68px;padding:0}.pet-launch-art{width:64px;height:64px}.pet-launch img{width:62px;height:62px}.pet-launch-copy{display:none}.pet-chat{bottom:77px;width:calc(100vw - 22px);height:min(520px,calc(100dvh - 252px));border-radius:22px 22px 6px 22px}.pet-companion.is-open .pet-launch{width:64px;min-width:64px}.pet-message{font-size:10px}}
+    @media(prefers-color-scheme:dark){.pet-launch,.pet-chat{background:rgba(42,38,33,.97)}.pet-chat-head{background:linear-gradient(135deg,var(--paper),var(--sage-soft))}.pet-chat-avatar{background:rgba(255,255,255,.05)}}
   </style>
-  <script type="module" crossorigin src="/ilink-app-prototype/assets/index-DV-8xOY9.js"></script>
+  <script type="module" crossorigin src="/ilink-app-prototype/assets/index-CTlvYZZK.js"></script>
 </head>
 <body>
   <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
@@ -187,6 +213,37 @@
       <p class="auth-status" role="status" aria-live="polite"></p>
     </section>
   </div>
+
+  <aside class="pet-companion" data-state="idle" aria-label="小连 AI 电子宠物">
+    <section class="pet-chat" role="dialog" aria-modal="false" aria-labelledby="pet-chat-title" aria-hidden="true">
+      <header class="pet-chat-head">
+        <span class="pet-chat-avatar" aria-hidden="true"><img src="ilink-xiaolian.png" alt=""></span>
+        <div class="pet-chat-title"><b id="pet-chat-title">小连 · ilink 伙伴</b><span class="pet-chat-status"><i></i><span>正在唤醒</span></span></div>
+        <button class="pet-close" type="button" aria-label="关闭小连">×</button>
+      </header>
+      <div class="pet-messages" role="log" aria-live="polite" aria-relevant="additions">
+        <div class="pet-thinking" aria-label="小连正在思考"><i></i><i></i><i></i></div>
+      </div>
+      <div class="pet-suggestions" aria-label="常见产品问题">
+        <button class="pet-suggestion" type="button" data-pet-question="怎么录一条真实记录？">怎么录音？</button>
+        <button class="pet-suggestion" type="button" data-pet-question="我的录音和文字谁能看到？">谁能看到？</button>
+        <button class="pet-suggestion" type="button" data-pet-question="智能眼镜现在已经能连接了吗？">眼镜能用吗？</button>
+        <button class="pet-suggestion" type="button" data-pet-question="InsForge 在 ilink 里负责什么？">InsForge 做什么？</button>
+      </div>
+      <div class="pet-form-wrap">
+        <form class="pet-form">
+          <input class="pet-input" type="text" maxlength="800" autocomplete="off" aria-label="向小连提问" placeholder="问我任何关于 ilink 的问题">
+          <button class="pet-send" type="submit" aria-label="发送给小连">↑</button>
+        </form>
+        <div class="pet-privacy">登录后开启真实 AI 对话；小连不会读取你的私人记录。</div>
+      </div>
+    </section>
+    <button class="pet-launch" type="button" aria-label="打开小连 AI 电子宠物" aria-expanded="false">
+      <span class="pet-launch-art"><img src="ilink-xiaolian.png" alt="小连，ilink 的 AI 电子宠物"></span>
+      <span class="pet-launch-copy"><b>问问小连</b><span>ilink 产品伙伴</span></span>
+      <i class="pet-online-dot" aria-hidden="true"></i>
+    </button>
+  </aside>
 
   <main class="stage app-story">
     <aside class="stage-copy"><div class="eyebrow">ilink · Life Between Us</div><h1>让彼此知道，<br>生活正在怎样发生。</h1><div class="rule"></div><p>随口记录一天里的小事，晚上确认 AI 的整理，再把愿意分享的部分发给父母。不是汇报行程，而是给彼此一个真正了解和关心的入口。</p></aside>

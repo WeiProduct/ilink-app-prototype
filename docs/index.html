@@ -4,7 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#FBF3E7" />
-  <title>ilink · 完整 App 原型</title>
+  <meta name="description" content="ilink 是一个把真实生活记录、私人整理和家人分享连成闭环的 Web App。" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="ilink" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/ilink-app-prototype/assets/ilink-smart-glasses-BHf7g9zb.png" />
+  <title>ilink · 记录真实生活</title>
   <!-- FALLBACK: vendor/pretext.js missing, using CDN when available. The prototype remains functional offline. -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -125,7 +132,28 @@
       .language-switch{top:max(7px,env(safe-area-inset-top));right:8px;transform:scale(.86);transform-origin:top right}.hardware-story{padding:40px 15px 28px}.hardware-title h1{font-size:32px}.hardware-header{margin-bottom:18px}.hardware-intro{font-size:11px}.glasses-panel{min-height:300px;border-radius:6px 22px 22px 22px}.glasses-image{min-height:300px}.glasses-label.camera{top:14%;right:4%}.glasses-button{width:27px;height:13px}.tap-gesture{left:69%;top:49%;transform:scale(.82)}.tap-gesture span{display:none}.loop-panel{padding:21px 16px;border-radius:22px 6px 22px 22px}.hardware-step{grid-template-columns:38px 1fr}.step-index{width:38px;height:38px}.hardware-step:not(:last-child):after{left:18px;top:48px}.step-chip{display:none}.trust-bar{grid-template-columns:1fr}.trust-item{min-height:44px}.hardware-caption{align-items:flex-start;flex-direction:column;gap:5px}
     }
   </style>
-  <script type="module" crossorigin src="/ilink-app-prototype/assets/index-BeSZZyDC.js"></script>
+  <style>
+    button:disabled{cursor:not-allowed;opacity:.58}
+    .account-chip[data-state="loading"]{color:var(--muted)}
+    .account-chip[data-state="loading"]:before{content:"";display:inline-block;width:7px;height:7px;margin-right:7px;border:2px solid var(--line);border-top-color:var(--brick);border-radius:50%;animation:spin .8s linear infinite}
+    .account-chip[data-state="offline"]:before{content:"";display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:var(--muted)}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .data-mode-note,.sync-state{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:10px;background:var(--paper-2);padding:9px 10px;margin:0 0 12px;font-size:8px;line-height:1.45;color:var(--muted)}
+    .data-mode-note b,.sync-state b{color:var(--ink);font-size:8px}.data-mode-note button,.sync-state button{min-height:30px;border:0;border-radius:7px;background:var(--brick);color:#fff8ef;padding:0 10px;font-size:8px;font-weight:700;white-space:nowrap;cursor:pointer}
+    .has-session .data-mode-note,.has-session .demo-data{display:none!important}
+    .data-empty{border:1px dashed #ccbda9;border-radius:12px;background:rgba(255,250,242,.42);padding:22px 16px;text-align:center;color:var(--muted)}.data-empty b{display:block;font-family:var(--serif);font-size:12px;color:var(--ink);margin-bottom:5px}.data-empty span{display:block;font-size:8px;line-height:1.55}
+    .record-detail{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-top:8px}.record-duration{font-size:7px;color:var(--muted)}
+    .organize-actions button[data-action="delete-record"],.share-manage button{color:var(--brick);background:transparent}.organize-actions button.is-playing{color:#fff8ef;background:var(--sage);border-color:var(--sage)}
+    .share-manage{display:flex;justify-content:flex-end;margin-top:9px;padding-top:8px;border-top:1px solid rgba(125,142,109,.22)}.share-manage button{min-height:30px;border:1px solid rgba(181,82,67,.24);border-radius:7px;padding:0 10px;font-size:8px;font-weight:700;cursor:pointer}
+    .entry-editor-fields{display:grid;gap:9px}.entry-editor-fields label{display:grid;gap:5px;font-size:8px;color:var(--muted)}.entry-editor-fields input,.entry-editor-fields textarea{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--cream);color:var(--ink);padding:10px 11px;font:10px/1.55 var(--sans)}.entry-editor-fields input{height:44px}.entry-editor-fields textarea{min-height:112px;resize:vertical}.entry-editor-meta{display:flex;justify-content:space-between;gap:12px;margin-top:9px;font-size:7px;color:var(--muted)}.entry-editor-actions{display:grid;grid-template-columns:.8fr 1fr 1.2fr;gap:7px;margin-top:14px}.entry-editor-actions button{min-height:44px;border:1px solid var(--line);border-radius:11px;background:var(--paper);font-size:9px;font-weight:700;cursor:pointer}.entry-editor-actions .danger{border-color:rgba(181,82,67,.35);color:var(--brick)}.entry-editor-actions .save{border-color:var(--brick);background:var(--brick);color:#fff8ef}
+    .profile-editor{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}.profile-editor input{min-width:0;height:42px;border:1px solid var(--line);border-radius:9px;background:var(--paper);padding:0 11px;color:var(--ink);font-size:10px}.profile-editor button{min-height:42px;border:0;border-radius:9px;background:var(--ink);color:var(--paper);padding:0 12px;font-size:9px;font-weight:700;cursor:pointer}
+    .verify-tools{display:flex;justify-content:flex-end;margin-top:7px}.verify-tools button{border:0;background:transparent;color:var(--brick);font-size:8px;font-weight:700;cursor:pointer}
+    .manage-row.action-row{width:100%;border-width:0 0 1px;background:transparent;text-align:left;color:inherit;cursor:pointer}.manage-row.action-row:last-child{border-bottom:0}.manage-row.action-row .chev{margin-left:auto}.manage-row.action-row.is-disabled{opacity:.55}
+    .preview-note{border-left:3px solid var(--gold);border-radius:0 10px 10px 0;background:var(--paper-2);padding:9px 10px;margin:-4px 0 13px;font-size:8px;line-height:1.5;color:var(--muted)}.preview-note b{color:var(--ink)}
+    .network-note{position:absolute;z-index:25;left:50%;top:6px;transform:translateX(-50%);border-radius:99px;background:var(--ink);color:var(--paper);padding:6px 10px;font-size:7px;font-weight:700;box-shadow:0 5px 14px rgba(44,41,37,.18)}
+    @media(max-width:520px){.entry-editor-actions{grid-template-columns:1fr 1fr}.entry-editor-actions .save{grid-column:1/-1;grid-row:1}.network-note{top:4px}}
+  </style>
+  <script type="module" crossorigin src="/ilink-app-prototype/assets/index-6CNPSOCo.js"></script>
 </head>
 <body>
   <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
@@ -144,7 +172,7 @@
     <button class="active" type="button" data-lang="zh" aria-pressed="true">中文</button>
     <button type="button" data-lang="en" aria-pressed="false">EN</button>
   </nav>
-  <button class="account-chip" type="button" data-action="open-auth" data-state="offline">登录以同步</button>
+  <button class="account-chip" type="button" data-action="open-auth" data-state="loading">正在检查同步</button>
   <div class="auth-backdrop" hidden>
     <section class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="auth-title">
       <header class="auth-head"><div><small>INSFORGE · PRIVATE SYNC</small><h2 id="auth-title">登录 ilink</h2></div><button class="auth-close" type="button" aria-label="关闭">×</button></header>
@@ -153,8 +181,9 @@
         <div class="auth-fields"><input class="auth-email" type="email" autocomplete="email" placeholder="邮箱"><input class="auth-password" type="password" autocomplete="current-password" minlength="6" placeholder="密码（至少 6 位）"></div>
         <div class="auth-actions"><button type="button" data-auth="signin">登录</button><button type="button" data-auth="signup">创建账号</button></div>
         <div class="verify-panel" hidden><input class="auth-otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="输入邮箱验证码"><button class="verify-button" type="button" data-auth="verify">验证</button></div>
+        <div class="verify-tools" hidden><button type="button" data-auth="resend">重新发送验证码</button></div>
       </div>
-      <div class="signed-in-panel" hidden><b class="signed-in-name">已登录</b><span class="signed-in-email"></span><button class="signout-button" type="button" data-auth="signout">退出登录</button></div>
+      <div class="signed-in-panel" hidden><b class="signed-in-name">已登录</b><span class="signed-in-email"></span><div class="profile-editor"><input class="profile-nickname" type="text" maxlength="30" autocomplete="nickname" placeholder="你的显示名称"><button type="button" data-auth="profile">保存名称</button></div><button class="signout-button" type="button" data-auth="signout">退出登录</button></div>
       <p class="auth-status" role="status" aria-live="polite"></p>
     </section>
   </div>
@@ -166,12 +195,13 @@
       <div class="statusbar"><span>9:41</span><span class="status-icons"><i></i><i></i><i></i></span></div>
       <div class="app capture-mode">
         <div class="toast" role="status" aria-live="polite">已存入你的私人时间线</div>
+        <div class="network-note" role="status" hidden>当前离线，已加载的内容仍可查看</div>
 
         <section class="capture-home" aria-label="语音记录首屏">
           <header class="capture-brand"><b>ilink</b><span><i></i>Button 已连接</span></header>
           <div class="capture-center">
             <small>PRIVATE · 只属于你</small>
-            <h2 data-pretext contenteditable="true">说一句，让彼此更了解。</h2>
+            <h2 data-pretext>说一句，让彼此更了解。</h2>
             <p class="capture-state" data-pretext>先记录自己的生活。每天由你确认整理结果，再决定哪些部分可以让家人看到。</p>
             <div class="hero-waveform" aria-hidden="true"><i style="--h:18px;--i:1;--o:.05"></i><i style="--h:31px;--i:2;--o:.16"></i><i style="--h:48px;--i:3;--o:.26"></i><i style="--h:26px;--i:4;--o:.12"></i><i style="--h:57px;--i:5;--o:.31"></i><i style="--h:38px;--i:6;--o:.2"></i><i style="--h:66px;--i:7;--o:.36"></i><i style="--h:43px;--i:8;--o:.23"></i><i style="--h:25px;--i:9;--o:.11"></i><i style="--h:53px;--i:10;--o:.29"></i><i style="--h:34px;--i:11;--o:.18"></i><i style="--h:61px;--i:12;--o:.34"></i><i style="--h:42px;--i:13;--o:.22"></i><i style="--h:22px;--i:14;--o:.09"></i><i style="--h:48px;--i:15;--o:.26"></i><i style="--h:29px;--i:16;--o:.14"></i><i style="--h:17px;--i:17;--o:.05"></i></div>
             <div class="intent-examples" aria-label="语音 Agent 示例">
@@ -184,17 +214,18 @@
         </section>
 
         <section class="page active" data-page="daily" aria-labelledby="daily-title">
-          <header class="page-header"><div><small>个人空间 · 7 月 18 日</small><h2 id="daily-title" data-pretext contenteditable="true">我</h2></div><button class="avatar avatar-button" type="button" data-action="manage" aria-label="打开个人管理">YK</button></header>
+          <header class="page-header"><div><small>个人空间 · <span class="today-date">今天</span></small><h2 id="daily-title" data-pretext>我</h2></div><button class="avatar avatar-button" type="button" data-action="manage" aria-label="打开个人管理">IL</button></header>
           <div class="my-view-tabs" aria-label="我的内容"><button class="my-view-tab active" type="button" data-my-view="day">我的一天</button><button class="my-view-tab" type="button" data-my-view="shares">我的分享</button></div>
           <section class="my-day-view">
-            <p class="daily-intro">ilink 把我今天留下的内容整理成了 4 个生活片段。先确认它有没有理解对，再决定哪些值得和家人分享。</p>
-            <article class="daily-hero"><div class="daily-hero-head"><small>MY DAY · 7 月 18 日</small><span class="daily-status">2 / 4 已确认</span></div><h3 data-pretext contenteditable="true">今天开始把一个想法做成真正的产品，也在普通的买菜和散步里慢了下来。</h3><p>这是属于我的一天。所有内容默认私密，确认前不会用于生成家人近况卡。</p><div class="daily-progress"><i></i></div></article>
+            <div class="data-mode-note"><span><b>当前显示体验数据</b><br>登录后这里会只显示你的真实录音和分享。</span><button type="button" data-action="open-auth-inline">登录同步</button></div>
+            <p class="daily-intro daily-intro-copy">ilink 把我今天留下的内容整理成了 4 个生活片段。先确认它有没有理解对，再决定哪些值得和家人分享。</p>
+            <article class="daily-hero"><div class="daily-hero-head"><small>MY DAY · <span class="today-date">今天</span></small><span class="daily-status">2 / 4 已确认</span></div><h3 class="daily-summary-copy" data-pretext>今天开始把一个想法做成真正的产品，也在普通的买菜和散步里慢了下来。</h3><p class="daily-summary-note">这是属于我的一天。所有内容默认私密，确认前不会用于生成家人近况卡。</p><div class="daily-progress"><i></i></div></article>
             <div class="section-title"><h3>等待我确认</h3><button type="button" data-action="confirm-day">全部确认</button></div>
             <div class="organize-list">
-              <article class="organize-card"><div class="organize-head"><span>09:20 · 来自 Button</span><b>待确认</b></div><h4>开始做 ilink 产品原型</h4><p>确定先把记录、我的一天和家庭分享做成完整闭环。</p><div class="organize-meta"><span>AI 整理 · 可修改</span><div class="organize-actions"><button type="button">编辑</button><button class="confirm-record" type="button" data-action="confirm-record">确认</button></div></div></article>
-              <article class="organize-card"><div class="organize-head"><span>15:10 · 来自手机</span><b>待确认</b></div><h4>买菜，也散了会儿步</h4><p>天气很好，走完以后感觉比上午放松了一些。</p><div class="organize-meta"><span>AI 整理 · 可修改</span><div class="organize-actions"><button type="button">编辑</button><button class="confirm-record" type="button" data-action="confirm-record">确认</button></div></div></article>
-              <article class="organize-card confirmed"><div class="organize-head"><span>11:10 · 来自 Button</span><b>已确认</b></div><h4>和 Andy 讨论产品方向</h4><p>决定硬件不在 Hackathon 演示，但保留未来接口。</p><div class="organize-meta"><span>仅自己可见</span><div class="organize-actions"><button type="button">编辑</button><button class="confirm-record" type="button" data-action="confirm-record">✓ 已确认</button></div></div></article>
-              <article class="organize-card confirmed"><div class="organize-head"><span>12:05 · 来自 Button</span><b>已确认</b></div><h4>在家做了午饭</h4><p>吃完以后收拾厨房，给妈妈发了张新菜的照片。</p><div class="organize-meta"><span>仅自己可见</span><div class="organize-actions"><button type="button">编辑</button><button class="confirm-record" type="button" data-action="confirm-record">✓ 已确认</button></div></div></article>
+              <article class="organize-card demo-data"><div class="organize-head"><span>09:20 · 体验示例</span><b>待确认</b></div><h4>开始做 ilink 产品原型</h4><p>确定先把记录、我的一天和家庭分享做成完整闭环。</p><div class="organize-meta"><span>示例数据 · 不会上传</span><div class="organize-actions"><button type="button" data-action="demo-edit">编辑</button><button class="confirm-record" type="button" data-action="confirm-record">确认</button></div></div></article>
+              <article class="organize-card demo-data"><div class="organize-head"><span>15:10 · 体验示例</span><b>待确认</b></div><h4>买菜，也散了会儿步</h4><p>天气很好，走完以后感觉比上午放松了一些。</p><div class="organize-meta"><span>示例数据 · 不会上传</span><div class="organize-actions"><button type="button" data-action="demo-edit">编辑</button><button class="confirm-record" type="button" data-action="confirm-record">确认</button></div></div></article>
+              <article class="organize-card demo-data confirmed"><div class="organize-head"><span>11:10 · 体验示例</span><b>已确认</b></div><h4>和 Andy 讨论产品方向</h4><p>决定硬件不在 Hackathon 演示，但保留未来接口。</p><div class="organize-meta"><span>示例数据 · 仅本次体验</span><div class="organize-actions"><button type="button" data-action="demo-edit">编辑</button><button class="confirm-record" type="button" data-action="confirm-record">✓ 已确认</button></div></div></article>
+              <article class="organize-card demo-data confirmed"><div class="organize-head"><span>12:05 · 体验示例</span><b>已确认</b></div><h4>在家做了午饭</h4><p>吃完以后收拾厨房，给妈妈发了张新菜的照片。</p><div class="organize-meta"><span>示例数据 · 仅本次体验</span><div class="organize-actions"><button type="button" data-action="demo-edit">编辑</button><button class="confirm-record" type="button" data-action="confirm-record">✓ 已确认</button></div></div></article>
             </div>
             <div class="daily-actions"><button type="button" data-nav-jump="capture">继续记录</button><button type="button" data-action="daily-share">生成家人近况卡</button></div>
             <div class="privacy-note"><svg><use href="#i-lock"/></svg><span>我的一天默认只有我能看到。家人只会收到我最后确认发送的卡片。</span></div>
@@ -202,9 +233,9 @@
           <section class="my-shares-view" hidden>
             <p class="daily-intro">这里收好我主动分享给妈妈和爸爸的近况。只有最终发送的卡片会出现在这里。</p>
             <div class="share-stream my-share-stream">
-              <article class="share-entry sent"><div class="share-entry-head"><span class="share-direction">分享给妈妈 · 陈丽</span><span class="share-date">今天 16:52 · 已送达</span></div><h4>今天开始做一个新产品</h4><p>今天开始认真做一个新产品，下午也出去走了走。最近挺充实，周日晚上可以打电话。</p></article>
-              <article class="share-entry sent"><div class="share-entry-head"><span class="share-direction">分享给爸爸 · Yiming</span><span class="share-date">7 月 14 日 · 已读</span></div><h4>Hackathon 准备得差不多了</h4><p>产品方向已经定下来，这几天主要在完善原型和演示流程。</p></article>
-              <article class="share-entry sent"><div class="share-entry-head"><span class="share-direction">分享给妈妈 · 陈丽</span><span class="share-date">7 月 12 日 · 已读</span></div><h4>最近在准备转型</h4><p>开始做一个新产品，方向比上周更清楚。周日晚上有空，可以打电话。</p></article>
+              <article class="share-entry sent demo-data"><div class="share-entry-head"><span class="share-direction">体验示例 · 分享给妈妈</span><span class="share-date">今天 16:52</span></div><h4>今天开始做一个新产品</h4><p>今天开始认真做一个新产品，下午也出去走了走。最近挺充实，周日晚上可以打电话。</p></article>
+              <article class="share-entry sent demo-data"><div class="share-entry-head"><span class="share-direction">体验示例 · 分享给爸爸</span><span class="share-date">7 月 14 日</span></div><h4>Hackathon 准备得差不多了</h4><p>产品方向已经定下来，这几天主要在完善原型和演示流程。</p></article>
+              <article class="share-entry sent demo-data"><div class="share-entry-head"><span class="share-direction">体验示例 · 分享给妈妈</span><span class="share-date">7 月 12 日</span></div><h4>最近在准备转型</h4><p>开始做一个新产品，方向比上周更清楚。周日晚上有空，可以打电话。</p></article>
             </div>
             <div class="privacy-note"><svg><use href="#i-lock"/></svg><span>这里仅显示我已经确认发送的近况卡，不包含我的原始记录或未发送草稿。</span></div>
           </section>
@@ -212,7 +243,8 @@
 
         <section class="page" data-page="family" aria-labelledby="family-title">
           <section class="family-list-view">
-            <header class="page-header"><div><small>家人 · 2 位已连接</small><h2 id="family-title" data-pretext contenteditable="true">我们的生活</h2></div><button class="avatar avatar-button" type="button" data-action="manage" aria-label="打开个人管理">YK</button></header>
+            <header class="page-header"><div><small>家人 · 产品预览</small><h2 id="family-title" data-pretext>我们的生活</h2></div><button class="avatar avatar-button" type="button" data-action="manage" aria-label="打开个人管理">IL</button></header>
+            <div class="preview-note"><b>家庭连接功能预览</b><br>这一页暂时使用体验内容，不会读取或推断真实家人的生活；你真实保存的近况卡只会出现在「我的分享」。</div>
             <div class="family-view-tabs" aria-label="家人页视图"><button class="family-view-tab active" type="button" data-family-view="focus">近期关注</button><button class="family-view-tab" type="button" data-family-view="members">家人列表</button></div>
 
             <section class="family-focus-view">
@@ -260,12 +292,12 @@
         </section>
 
         <section class="page" data-page="me" aria-labelledby="me-title">
-          <header class="manage-back"><button class="back-btn" type="button" data-action="close-manage" aria-label="返回">‹</button><div class="detail-person"><small>个人空间</small><h2 id="me-title" data-pretext contenteditable="true">我的 ilink</h2></div><div class="avatar">YK</div></header>
+          <header class="manage-back"><button class="back-btn" type="button" data-action="close-manage" aria-label="返回">‹</button><div class="detail-person"><small>个人空间</small><h2 id="me-title" data-pretext>我的 ilink</h2></div><div class="avatar profile-avatar">IL</div></header>
           <p class="family-intro">管理设备、家人连接和每一条生活数据的边界。</p>
           <div class="management-stack">
-            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-device"/></svg></span><span class="manage-title"><b>硬件配对管理</b><small>ilink Button 01 · 当前已连接</small></span><button class="manage-action" type="button">管理</button></div><div class="manage-row"><span class="device-dot"></span><span class="manage-row-copy"><b>Button 01</b><small>电量 82% · 刚刚同步 · 待机不录音</small></span><span class="status-pill">已连接</span></div><button class="manage-row" type="button" style="width:100%;border-width:0 0 1px;background:transparent;text-align:left"><span class="manage-row-copy"><b>＋ 配对新设备</b><small>通过蓝牙添加另一枚 ilink Button</small></span><span class="chev">›</span></button></article>
-            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-family"/></svg></span><span class="manage-title"><b>与家人的配对管理</b><small>2 位家人 · 权限彼此独立</small></span><button class="manage-action" type="button">邀请</button></div><div class="manage-row"><span class="family-avatar" style="width:30px;height:30px;font-size:9px">妈</span><span class="manage-row-copy"><b>妈妈 · 陈丽</b><small>双方可见已批准的近况卡</small></span><span class="status-pill">已连接</span></div><div class="manage-row"><span class="family-avatar father" style="width:30px;height:30px;font-size:9px">爸</span><span class="manage-row-copy"><b>爸爸 · Yiming</b><small>双方可见已批准的近况卡</small></span><span class="status-pill">已连接</span></div></article>
-            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-lock"/></svg></span><span class="manage-title"><b>隐私管理</b><small>默认私密 · 分享前逐次确认</small></span><button class="manage-action" type="button">查看</button></div><div class="manage-row"><span class="manage-row-copy"><b>原始语音</b><small>私密保存于 InsForge，仅本人登录后可访问</small></span><span class="status-pill private">仅自己</span></div><div class="manage-row"><span class="manage-row-copy"><b>家人近况卡</b><small>每次生成、编辑并确认后才发送</small></span><span class="status-pill private">逐次确认</span></div><div class="manage-row"><span class="manage-row-copy"><b>数据导出与彻底删除</b><small>管理时间线、录音和分享记录</small></span><span class="chev">›</span></div></article>
+            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-device"/></svg></span><span class="manage-title"><b>硬件配对管理</b><small>产品预览 · 浏览器录音已经可用</small></span><button class="manage-action" type="button" disabled>开发中</button></div><div class="manage-row"><span class="device-dot"></span><span class="manage-row-copy"><b>浏览器麦克风</b><small>按住录音 · OpenAI 真实转写 · InsForge 私密保存</small></span><span class="status-pill">可用</span></div></article>
+            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-family"/></svg></span><span class="manage-title"><b>与家人的配对管理</b><small>邀请和跨账号投递仍在开发</small></span><button class="manage-action" type="button" disabled>即将开放</button></div><div class="manage-row"><span class="manage-row-copy"><b>当前为家庭页面体验数据</b><small>不会读取、联系或推断任何真实家人</small></span><span class="status-pill private">预览</span></div></article>
+            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-lock"/></svg></span><span class="manage-title"><b>隐私与数据</b><small>默认私密 · 分享前逐次确认</small></span><button class="manage-action" type="button" data-action="open-auth-profile">账号</button></div><div class="manage-row"><span class="manage-row-copy"><b>原始语音</b><small>私密保存于 InsForge，仅本人登录后可访问</small></span><span class="status-pill private">仅自己</span></div><div class="manage-row"><span class="manage-row-copy"><b>家人近况卡</b><small>每次生成、编辑并确认后才发送</small></span><span class="status-pill private">逐次确认</span></div><button class="manage-row action-row" type="button" data-action="export-data"><span class="manage-row-copy"><b>导出我的数据</b><small>下载生活片段、转写和分享记录的 JSON 副本</small></span><span class="chev">›</span></button><button class="manage-row action-row" type="button" data-action="install-app"><span class="manage-row-copy"><b>安装 ilink Web App</b><small class="install-hint">添加到主屏幕，像 App 一样打开</small></span><span class="chev">›</span></button></article>
           </div>
         </section>
 
@@ -283,7 +315,10 @@
           <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"><div class="handle"></div><div class="intent-badge">识别为：<span class="intent-kind">记录生活</span></div><h3 id="sheet-title" class="intent-title">我听到的是这样</h3><div class="sheet-sub intent-sub">确认后才会进入你的私人时间线</div><div class="transcript intent-transcript" data-pretext contenteditable="true">“刚读完一篇关于 Agent 的评测文章，大概四十分钟，记下了三个产品想法。”</div><div class="parsed-grid"><div class="parsed"><small class="intent-label-1">活动</small><b class="intent-value-1">阅读 Agent 评测</b></div><div class="parsed"><small class="intent-label-2">时长</small><b class="intent-value-2">估计 · 40 分钟</b></div><div class="parsed"><small class="intent-label-3">主题</small><b class="intent-value-3">AI 学习</b></div><div class="parsed"><small class="intent-label-4">时间</small><b class="intent-value-4">刚刚 · 16:42</b></div></div><div class="sheet-actions"><button type="button" data-action="close-sheet">重新说</button><button class="save intent-primary" type="button" data-action="save-event">存入私人时间线</button></div></section>
         </div>
         <div class="sheet-backdrop share-backdrop" aria-hidden="true">
-          <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="share-sheet-title"><div class="handle"></div><h3 id="share-sheet-title">给妈妈的今日近况</h3><div class="sheet-sub">只发送你勾选并确认的内容。原始录音和未确认片段不会分享。</div><div class="share-options"><label class="share-line"><input type="checkbox" checked><span><b>今天在做什么</b><span>开始把 ilink 的想法做成产品，也和 Andy 确定了核心流程。</span></span></label><label class="share-line"><input type="checkbox" checked><span><b>一个生活小片段</b><span>下午去买菜，也散了会儿步，心情比上午放松。</span></span></label><label class="share-line"><input type="checkbox"><span><b>私密候选 · 默认不分享</b><span>今天有一小段时间很焦虑，还没有想好要不要说。</span></span></label></div><div class="share-preview"><b class="share-recipient">妈妈将看到：</b><br>“今天开始认真做一个新产品，下午也出去走了走。最近挺充实，周日晚上可以打电话。”</div><div class="sheet-actions"><button type="button" data-action="close-share">再编辑一下</button><button class="save" type="button" data-action="send-share">确认并发送</button></div></section>
+          <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="share-sheet-title"><div class="handle"></div><h3 id="share-sheet-title">给妈妈的今日近况</h3><div class="sheet-sub">只使用你勾选并确认的内容。当前版本会把卡片保存到「我的分享」；家人配对上线后才能真正投递。</div><div class="share-options"></div><div class="share-preview"><b class="share-recipient">准备给妈妈：</b><br>请先选择一条已经确认的生活片段。</div><div class="sheet-actions"><button type="button" data-action="close-share">再编辑一下</button><button class="save" type="button" data-action="send-share">确认并保存</button></div></section>
+        </div>
+        <div class="sheet-backdrop entry-backdrop" aria-hidden="true">
+          <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="entry-editor-title"><div class="handle"></div><h3 id="entry-editor-title">编辑生活片段</h3><div class="sheet-sub">修改会同步到你的 InsForge 私人空间；原始录音不会被改写。</div><div class="entry-editor-fields"><label>标题<input class="entry-title-input" type="text" maxlength="120" autocomplete="off"></label><label>真实转写<textarea class="entry-transcript-input" maxlength="5000"></textarea></label></div><div class="entry-editor-meta"><span class="entry-audio-meta">无原始录音</span><span>仅自己可见</span></div><div class="entry-editor-actions"><button class="danger" type="button" data-action="delete-entry">删除</button><button type="button" data-action="close-entry">取消</button><button class="save" type="button" data-action="save-entry">保存修改</button></div></section>
         </div>
       </div>
     </section>

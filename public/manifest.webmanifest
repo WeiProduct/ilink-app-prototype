@@ -1,0 +1,20 @@
+{
+  "name": "ilink · 记录真实生活",
+  "short_name": "ilink",
+  "description": "把真实生活记录、私人整理和家人分享连成闭环。",
+  "lang": "zh-CN",
+  "start_url": "/ilink-app-prototype/",
+  "scope": "/ilink-app-prototype/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FBF3E7",
+  "theme_color": "#FBF3E7",
+  "icons": [
+    {
+      "src": "ilink-smart-glasses.png",
+      "sizes": "1536x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

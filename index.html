@@ -264,7 +264,7 @@
           <div class="management-stack">
             <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-device"/></svg></span><span class="manage-title"><b>硬件配对管理</b><small>ilink Button 01 · 当前已连接</small></span><button class="manage-action" type="button">管理</button></div><div class="manage-row"><span class="device-dot"></span><span class="manage-row-copy"><b>Button 01</b><small>电量 82% · 刚刚同步 · 待机不录音</small></span><span class="status-pill">已连接</span></div><button class="manage-row" type="button" style="width:100%;border-width:0 0 1px;background:transparent;text-align:left"><span class="manage-row-copy"><b>＋ 配对新设备</b><small>通过蓝牙添加另一枚 ilink Button</small></span><span class="chev">›</span></button></article>
             <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-family"/></svg></span><span class="manage-title"><b>与家人的配对管理</b><small>2 位家人 · 权限彼此独立</small></span><button class="manage-action" type="button">邀请</button></div><div class="manage-row"><span class="family-avatar" style="width:30px;height:30px;font-size:9px">妈</span><span class="manage-row-copy"><b>妈妈 · 陈丽</b><small>双方可见已批准的近况卡</small></span><span class="status-pill">已连接</span></div><div class="manage-row"><span class="family-avatar father" style="width:30px;height:30px;font-size:9px">爸</span><span class="manage-row-copy"><b>爸爸 · Yiming</b><small>双方可见已批准的近况卡</small></span><span class="status-pill">已连接</span></div></article>
-            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-lock"/></svg></span><span class="manage-title"><b>隐私管理</b><small>默认私密 · 分享前逐次确认</small></span><button class="manage-action" type="button">查看</button></div><div class="manage-row"><span class="manage-row-copy"><b>原始语音</b><small>加密保存 30 天，之后自动删除</small></span><span class="status-pill private">仅自己</span></div><div class="manage-row"><span class="manage-row-copy"><b>家人近况卡</b><small>每次生成、编辑并确认后才发送</small></span><span class="status-pill private">逐次确认</span></div><div class="manage-row"><span class="manage-row-copy"><b>数据导出与彻底删除</b><small>管理时间线、录音和分享记录</small></span><span class="chev">›</span></div></article>
+            <article class="manage-card"><div class="manage-head"><span class="setting-icon"><svg><use href="#i-lock"/></svg></span><span class="manage-title"><b>隐私管理</b><small>默认私密 · 分享前逐次确认</small></span><button class="manage-action" type="button">查看</button></div><div class="manage-row"><span class="manage-row-copy"><b>原始语音</b><small>私密保存于 InsForge，仅本人登录后可访问</small></span><span class="status-pill private">仅自己</span></div><div class="manage-row"><span class="manage-row-copy"><b>家人近况卡</b><small>每次生成、编辑并确认后才发送</small></span><span class="status-pill private">逐次确认</span></div><div class="manage-row"><span class="manage-row-copy"><b>数据导出与彻底删除</b><small>管理时间线、录音和分享记录</small></span><span class="chev">›</span></div></article>
           </div>
         </section>
 
@@ -390,6 +390,11 @@
     const accountChip=document.querySelector('.account-chip');
     let currentUser=null;
     let recording=false,timer=null,startedAt=0,processing=false,currentFamily='mother',pendingVoiceIntent='record',lastCorePage='daily',currentFamilyLanding='focus',currentMyView='day';
+    let pointerHeld=false,mediaRecorder=null,mediaStream=null,audioChunks=[],recordingLimitTimer=null,pendingRecording=null;
+    let recordingStarting=false,recordingAttempt=0,activeRecordingConfig=null,activePointerId=null,pointerStartY=0,cancelRequested=false,saveInFlight=false;
+    const activeRecordingTasks=new Set();
+    const MAX_RECORDING_MS=60000;
+    const CANCEL_SWIPE_PX=58;
 
     function showToast(message){toast.textContent=message;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200)}
     function setAuthStatus(message='',isError=false){authStatus.textContent=message;authStatus.classList.toggle('error',isError)}
@@ -404,7 +409,7 @@
       document.querySelector('.signed-in-name').textContent=currentUser?.profile?.name||'已登录并同步';
       document.querySelector('.signed-in-email').textContent=currentUser?.email||'';
     }
-    function requireCurrentUser(){if(currentUser)return true;openAuth();setAuthStatus('请先登录，再保存私人记录。');return false}
+    function requireCurrentUser(){if(currentUser)return true;openAuth();setAuthStatus('请先登录，再录音和同步私人记录。');return false}
     function renderSyncedEntries(entries=[]){
       document.querySelectorAll('.organize-card.backend-generated').forEach(card=>card.remove());
       const list=document.querySelector('.organize-list');
@@ -415,7 +420,7 @@
         const state=document.createElement('b');state.textContent=entry.status==='confirmed'?'已确认':'待确认';head.append(time,state);
         const title=document.createElement('h4');title.textContent=entry.title;
         const body=document.createElement('p');body.textContent=entry.transcript;
-        const meta=document.createElement('div');meta.className='organize-meta';meta.innerHTML='<span>云端同步 · 仅自己可见</span><div class="organize-actions"><button class="confirm-record" type="button" data-action="confirm-record">确认</button></div>';
+        const meta=document.createElement('div');meta.className='organize-meta';meta.innerHTML=`<span>${entry.audio_key?'云端同步 · 含原始录音':'云端同步'} · 仅自己可见</span><div class="organize-actions"><button class="confirm-record" type="button" data-action="confirm-record">确认</button></div>`;
         if(entry.status==='confirmed')meta.querySelector('.confirm-record').textContent='✓ 已确认';
         card.append(head,title,body,meta);list.prepend(card);
       });
@@ -435,7 +440,7 @@
     async function syncPrivateData(){
       if(!insforge||!currentUser)return;
       const [entriesResult,sharesResult]=await Promise.all([
-        insforge.database.from('life_entries').select('id,title,transcript,status,occurred_at').order('occurred_at',{ascending:false}).limit(20),
+        insforge.database.from('life_entries').select('id,title,transcript,status,occurred_at,audio_key').order('occurred_at',{ascending:false}).limit(20),
         insforge.database.from('family_shares').select('id,recipient_label,title,body,sent_at').order('sent_at',{ascending:false}).limit(20)
       ]);
       if(entriesResult.error||sharesResult.error){showToast('云端同步失败，请稍后重试');return}
@@ -472,7 +477,7 @@
       if(error)return setAuthStatus(error.message||'验证码无效或已过期。',true);
       currentUser=data?.user||null;updateAuthUI();setAuthStatus('验证成功，私人同步已开启。');await syncPrivateData();setTimeout(closeAuth,700);
     });
-    document.querySelector('[data-auth="signout"]').addEventListener('click',async()=>{if(insforge)await insforge.auth.signOut();currentUser=null;renderSyncedEntries([]);renderSyncedShares([]);updateAuthUI();setAuthStatus('已安全退出。');setTimeout(closeAuth,500)});
+    document.querySelector('[data-auth="signout"]').addEventListener('click',async()=>{if(saveInFlight)return setAuthStatus('记录正在保存，请稍后再退出。',true);cancelActiveRecording();if(activeRecordingTasks.size)await Promise.allSettled([...activeRecordingTasks]);await discardPendingRecording();if(insforge)await insforge.auth.signOut();currentUser=null;renderSyncedEntries([]);renderSyncedShares([]);updateAuthUI();setAuthStatus('已安全退出。');setTimeout(closeAuth,500)});
     void hydrateAuth();
 
     const voiceIntents={
@@ -490,8 +495,22 @@
       document.querySelector('.intent-primary').textContent=data.primary;
     }
     function resetAppScroll(){app.scrollTop=0}
-    function openIntentSheet(intent){
-      setVoiceIntent(intent);resetAppScroll();backdrop.classList.add('open');backdrop.setAttribute('aria-hidden','false');
+    function openIntentSheet(intent,recordedResult=null){
+      setVoiceIntent(intent);
+      if(intent==='record'&&recordedResult){
+        const cleanText=recordedResult.text.trim();
+        document.querySelector('.intent-sub').textContent='这是从真实录音转写的文字；确认前仍可修改';
+        document.querySelector('.intent-transcript').textContent=`“${cleanText}”`;
+        document.querySelector('.intent-label-1').textContent='真实转写';
+        document.querySelector('.intent-value-1').textContent=cleanText.length>22?`${cleanText.slice(0,22)}…`:cleanText;
+        document.querySelector('.intent-label-2').textContent='录音时长';
+        document.querySelector('.intent-value-2').textContent=`${recordedResult.duration.toFixed(1)} 秒`;
+        document.querySelector('.intent-label-3').textContent='识别模型';
+        document.querySelector('.intent-value-3').textContent=recordedResult.model||'OpenAI 语音转写';
+        document.querySelector('.intent-label-4').textContent='存储';
+        document.querySelector('.intent-value-4').textContent='InsForge · 仅自己';
+      }
+      resetAppScroll();backdrop.classList.add('open');backdrop.setAttribute('aria-hidden','false');
       document.querySelector('.intent-primary').focus({preventScroll:true});
       requestAnimationFrame(resetAppScroll);
     }
@@ -507,32 +526,165 @@
       if(name==='family')showFamilyList();
       if(name==='daily')setMyView(currentMyView);
     }
-    function exitCapture(){app.classList.remove('capture-mode','is-recording','is-processing');document.querySelector('.capture-home').setAttribute('aria-hidden','true')}
+    function exitCapture(){cancelActiveRecording();app.classList.remove('capture-mode','is-recording','is-processing');document.querySelector('.capture-home').setAttribute('aria-hidden','true')}
     function enterCapture(){app.classList.add('capture-mode');document.querySelector('.capture-home').setAttribute('aria-hidden','false');recordDock.hidden=false;captureState.textContent='先记录自己的生活。每天由你确认整理结果，再决定哪些部分可以让家人看到。';navs.forEach(n=>{const on=n.dataset.nav==='capture';n.classList.toggle('active',on);n.toggleAttribute('aria-current',on)});maps.forEach(m=>m.classList.toggle('active',m.dataset.map==='capture'))}
     navs.forEach(n=>n.addEventListener('click',()=>{if(n.dataset.nav==='capture')enterCapture();else{exitCapture();showPage(n.dataset.nav)}}));
     maps.forEach(m=>m.addEventListener('click',()=>{if(m.dataset.map==='capture')enterCapture();else{exitCapture();showPage(m.dataset.map)}}));
     document.querySelector('.capture-skip').addEventListener('click',()=>{exitCapture();currentMyView='day';showPage('daily')});
 
-    function updateTime(){const seconds=Math.floor((Date.now()-startedAt)/1000);timerLabel.textContent=`正在听 · 00:${String(seconds).padStart(2,'0')}`}
-    function startRecording(event){
-      if(processing||recording)return;
+    function updateTime(){const seconds=Math.min(60,Math.floor((Date.now()-startedAt)/1000));timerLabel.textContent=`正在录音 · 00:${String(seconds).padStart(2,'0')}`}
+    function getRecordingConfig(){
+      const options=[
+        {mimeType:'audio/webm;codecs=opus',extension:'webm',format:'webm'},
+        {mimeType:'audio/webm',extension:'webm',format:'webm'},
+        {mimeType:'audio/mp4',extension:'m4a',format:'m4a'}
+      ];
+      return(typeof MediaRecorder.isTypeSupported==='function'?options.find(option=>MediaRecorder.isTypeSupported(option.mimeType)):null)||{mimeType:'',extension:'webm',format:'webm'};
+    }
+    function normalizeRecordingConfig(config,mimeType=''){
+      const actualMime=(mimeType||config?.mimeType||'').toLowerCase();
+      if(actualMime.includes('mp4')||actualMime.includes('m4a'))return{mimeType:mimeType||config?.mimeType||'audio/mp4',extension:'m4a',format:'m4a'};
+      if(actualMime.includes('ogg'))return{mimeType:mimeType||config?.mimeType||'audio/ogg',extension:'ogg',format:'ogg'};
+      if(actualMime.includes('wav'))return{mimeType:mimeType||config?.mimeType||'audio/wav',extension:'wav',format:'wav'};
+      if(actualMime.includes('mpeg')||actualMime.includes('mp3'))return{mimeType:mimeType||config?.mimeType||'audio/mpeg',extension:'mp3',format:'mp3'};
+      return{mimeType:mimeType||config?.mimeType||'audio/webm',extension:'webm',format:'webm'};
+    }
+    function stopStream(stream){stream?.getTracks().forEach(track=>track.stop())}
+    function stopMediaStream(){stopStream(mediaStream);mediaStream=null}
+    function resetRecordingUI(){
+      clearInterval(timer);clearTimeout(recordingLimitTimer);timer=null;recordingLimitTimer=null;recording=false;recordingStarting=false;processing=false;
+      app.classList.remove('is-recording','is-processing');recorder.classList.remove('recording','processing');recorder.setAttribute('aria-pressed','false');timerLabel.textContent='正在听 · 00:00';
+    }
+    function isCancelledError(error){return error?.name==='AbortError'}
+    function cancelledError(){const error=new Error('Recording cancelled');error.name='AbortError';return error}
+    function isCurrentRecording(attempt){return attempt===recordingAttempt&&!cancelRequested}
+    async function removeAudioKey(audioKey){
+      if(!audioKey||!insforge)return;
+      try{const {error}=await insforge.storage.from('voice-recordings').remove(audioKey);if(error)console.warn('[ilink] audio cleanup failed',error)}catch(error){console.warn('[ilink] audio cleanup failed',error)}
+    }
+    async function discardPendingRecording(){
+      const recordingToDelete=pendingRecording;pendingRecording=null;
+      await removeAudioKey(recordingToDelete?.audioKey);
+    }
+    function cancelActiveRecording(message=''){
+      const hadActive=recordingStarting||recording||processing||Boolean(mediaRecorder)||Boolean(mediaStream);
+      recordingAttempt+=1;pointerHeld=false;cancelRequested=true;activePointerId=null;
+      const recorderToStop=mediaRecorder,streamToStop=mediaStream;
+      mediaRecorder=null;mediaStream=null;audioChunks=[];activeRecordingConfig=null;
+      try{if(recorderToStop&&recorderToStop.state!=='inactive')recorderToStop.stop()}catch(error){console.warn('[ilink] recorder cancellation failed',error)}
+      stopStream(streamToStop);resetRecordingUI();
+      if(hadActive){captureState.textContent=message||'录音已取消，原始音频没有上传。';if(message)showToast(message)}
+      return hadActive;
+    }
+    function recordingErrorMessage(error){
+      if(error?.name==='NotAllowedError'||error?.name==='PermissionDeniedError')return '没有麦克风权限，请在浏览器设置中允许麦克风。';
+      if(error?.name==='NotFoundError')return '没有找到可用的麦克风。';
+      return error?.message||'录音或转写失败，请重新尝试。';
+    }
+    async function uploadAndTranscribe(blob,config,duration,attempt,user){
+      let uploadedAudio=null;
+      try{
+        if(!isCurrentRecording(attempt)||!user?.id)throw cancelledError();
+        if(blob.size<800)throw new Error('没有录到清晰的声音，请按住稍久一点。');
+        captureState.textContent='正在安全上传原始录音…';timerLabel.textContent='正在上传录音…';
+        const uniqueId=crypto.randomUUID?.()||`${Date.now()}-${Math.random().toString(16).slice(2)}`;
+        const requestedKey=`${user.id}/${Date.now()}-${uniqueId}.${config.extension}`;
+        const file=new File([blob],`ilink-recording.${config.extension}`,{type:blob.type||config.mimeType});
+        const {data:uploadData,error:uploadError}=await insforge.storage.from('voice-recordings').upload(requestedKey,file);
+        if(uploadError||!uploadData?.key)throw new Error(uploadError?.message||'录音上传失败');
+        uploadedAudio=uploadData;
+        if(!isCurrentRecording(attempt))throw cancelledError();
+
+        captureState.textContent='正在进行真实语音转文字…';timerLabel.textContent='AI 正在转写…';
+        const {data:transcription,error:transcriptionError}=await insforge.functions.invoke('transcribe-voice',{body:{audioKey:uploadData.key,format:config.format}});
+        if(transcriptionError||!transcription?.text)throw new Error(transcriptionError?.message||transcription?.error||'没有识别到文字');
+        if(!isCurrentRecording(attempt))throw cancelledError();
+        return{
+          audioUrl:uploadData.url,
+          audioKey:uploadData.key,
+          audioFormat:config.format,
+          duration,
+          text:transcription.text,
+          model:transcription.model,
+          requestId:transcription.requestId||null,
+          cost:transcription.usage?.cost??null
+        };
+      }catch(error){
+        await removeAudioKey(uploadedAudio?.key);
+        throw error;
+      }
+    }
+    async function startRecording(event){
+      if(processing||recording||recordingStarting)return;
       if(event?.button!==undefined&&event.button!==0)return;
-      event?.preventDefault(); recording=true; startedAt=Date.now();
-      app.classList.add('is-recording'); captureState.textContent='正在听你说。松开后，我们先一起确认。';
-      recorder.classList.add('recording'); recorder.setAttribute('aria-pressed','true'); updateTime(); timer=setInterval(updateTime,250);
-      if(event?.pointerId!==undefined)recorder.setPointerCapture?.(event.pointerId);
+      event?.preventDefault();
+      if(!requireCurrentUser())return;
+      if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){showToast('当前浏览器不支持录音，请使用最新版 Chrome 或 Safari。');return}
+      const attempt=++recordingAttempt,user=currentUser;recordingStarting=true;pointerHeld=true;cancelRequested=false;activePointerId=event?.pointerId??null;pointerStartY=Number.isFinite(event?.clientY)?event.clientY:0;
+      captureState.textContent='正在请求麦克风权限…';
+      let stream=null;
+      try{
+        if(event?.pointerId!==undefined)try{recorder.setPointerCapture?.(event.pointerId)}catch(error){console.warn('[ilink] pointer capture unavailable',error)}
+        await discardPendingRecording();
+        if(!isCurrentRecording(attempt)||!pointerHeld)throw cancelledError();
+        stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+        if(!isCurrentRecording(attempt)||!pointerHeld){stopStream(stream);if(attempt===recordingAttempt)captureState.textContent='麦克风已授权，请再次按住开始录音。';return}
+        const config=getRecordingConfig(),chunks=[];mediaStream=stream;audioChunks=chunks;activeRecordingConfig=config;
+        mediaRecorder=new MediaRecorder(stream,config.mimeType?{mimeType:config.mimeType}:undefined);
+        mediaRecorder.addEventListener('dataavailable',chunk=>{if(chunk.data?.size)chunks.push(chunk.data)});
+        const recorderForAttempt=mediaRecorder;
+        mediaRecorder.addEventListener('error',error=>{if(attempt===recordingAttempt&&mediaRecorder===recorderForAttempt){cancelActiveRecording();captureState.textContent='录音设备发生错误，请重新尝试。';showToast(recordingErrorMessage(error?.error||error))}},{once:true});
+        mediaRecorder.start(250);recordingStarting=false;recording=true;startedAt=Date.now();
+        app.classList.add('is-recording');captureState.textContent='正在真实录音。松开后会上传并转成文字。';recorder.classList.add('recording');recorder.setAttribute('aria-pressed','true');updateTime();timer=setInterval(updateTime,250);
+        recordingLimitTimer=setTimeout(()=>queueFinishRecording(null,true),MAX_RECORDING_MS);
+      }catch(error){
+        stopStream(stream);
+        if(attempt===recordingAttempt){pointerHeld=false;resetRecordingUI();stopMediaStream();if(!isCancelledError(error)){captureState.textContent='无法开始录音。';showToast(recordingErrorMessage(error))}}
+      }finally{if(attempt===recordingAttempt&&!recording)recordingStarting=false}
     }
-    function finishRecording(event){
-      if(!recording)return; event?.preventDefault(); recording=false; clearInterval(timer); app.classList.remove('is-recording');app.classList.add('is-processing');captureState.textContent='正在把这句话整理成一条生活记录…';recorder.classList.remove('recording'); recorder.classList.add('processing'); recorder.setAttribute('aria-pressed','false'); processing=true; timerLabel.textContent='正在整理你的语音…';
-      setTimeout(()=>{app.classList.remove('is-processing');recorder.classList.remove('processing');processing=false;openIntentSheet('record')},700);
+    async function finishRecording(event,reachedLimit=false){
+      pointerHeld=false;if(!recording||!mediaRecorder)return;event?.preventDefault();
+      recording=false;clearInterval(timer);clearTimeout(recordingLimitTimer);app.classList.remove('is-recording');app.classList.add('is-processing');captureState.textContent=reachedLimit?'已达到 60 秒上限，正在处理…':'正在处理真实录音…';recorder.classList.remove('recording');recorder.classList.add('processing');recorder.setAttribute('aria-pressed','false');processing=true;timerLabel.textContent='正在准备音频…';
+      const attempt=recordingAttempt,user=currentUser,duration=Math.min(MAX_RECORDING_MS,Date.now()-startedAt)/1000;
+      const recorderInstance=mediaRecorder,streamInstance=mediaStream,chunks=audioChunks,startedConfig=activeRecordingConfig||getRecordingConfig();
+      try{
+        const stopped=new Promise((resolve,reject)=>{
+          let settled=false;const finish=()=>{if(!settled){settled=true;clearTimeout(stopTimeout);resolve()}};const fail=error=>{if(!settled){settled=true;clearTimeout(stopTimeout);reject(error?.error||error)}};
+          const stopTimeout=setTimeout(finish,2500);recorderInstance.addEventListener('stop',finish,{once:true});recorderInstance.addEventListener('error',fail,{once:true});
+          try{if(recorderInstance.state==='inactive')finish();else recorderInstance.stop()}catch(error){fail(error)}
+        });
+        await stopped;if(!isCurrentRecording(attempt))throw cancelledError();
+        const config=normalizeRecordingConfig(startedConfig,recorderInstance.mimeType),blob=new Blob(chunks,{type:config.mimeType});
+        stopStream(streamInstance);if(mediaStream===streamInstance)mediaStream=null;
+        const result=await uploadAndTranscribe(blob,config,duration,attempt,user);
+        if(!isCurrentRecording(attempt)){await removeAudioKey(result.audioKey);throw cancelledError()}
+        pendingRecording=result;captureState.textContent='真实转写完成，请确认文字是否准确。';openIntentSheet('record',pendingRecording);
+      }catch(error){
+        if(attempt===recordingAttempt&&!isCancelledError(error)){captureState.textContent='转写没有完成，请重新按住说话。';showToast(recordingErrorMessage(error))}
+      }finally{
+        stopStream(streamInstance);if(mediaRecorder===recorderInstance)mediaRecorder=null;if(mediaStream===streamInstance)mediaStream=null;if(audioChunks===chunks)audioChunks=[];if(attempt===recordingAttempt){activeRecordingConfig=null;activePointerId=null;resetRecordingUI()}
+      }
     }
-    recorder.addEventListener('pointerdown',startRecording);recorder.addEventListener('pointerup',finishRecording);recorder.addEventListener('pointercancel',finishRecording);
-    window.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat&&!backdrop.classList.contains('open')&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){startRecording(e)}});
-    window.addEventListener('keyup',e=>{if(e.code==='Space')finishRecording(e)});
+    function queueFinishRecording(event,reachedLimit=false){
+      if(!recording||!mediaRecorder)return null;
+      const task=finishRecording(event,reachedLimit);activeRecordingTasks.add(task);
+      task.then(()=>activeRecordingTasks.delete(task),()=>activeRecordingTasks.delete(task));
+      return task;
+    }
+    recorder.addEventListener('pointerdown',event=>void startRecording(event));
+    recorder.addEventListener('pointermove',event=>{if(pointerHeld&&(activePointerId===null||event.pointerId===activePointerId)&&pointerStartY-event.clientY>=CANCEL_SWIPE_PX)cancelActiveRecording('已取消录音')});
+    window.addEventListener('pointerup',event=>{if(activePointerId===null||event.pointerId===activePointerId)queueFinishRecording(event)},{capture:true});
+    window.addEventListener('pointercancel',event=>{if(activePointerId===null||event.pointerId===activePointerId)cancelActiveRecording('录音已取消')},{capture:true});
+    window.addEventListener('keydown',event=>{const active=document.activeElement,blocked=active!==recorder&&(active?.isContentEditable||active?.closest?.('input,textarea,select,button,[contenteditable="true"]'));if(event.code==='Space'&&!event.repeat&&!backdrop.classList.contains('open')&&!blocked)void startRecording(event)});
+    window.addEventListener('keyup',event=>{if(event.code==='Space')queueFinishRecording(event)});
+    window.addEventListener('blur',()=>{if(recordingStarting||recording)cancelActiveRecording()});
+    window.addEventListener('pagehide',()=>cancelActiveRecording());
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelActiveRecording()});
 
     function closeSheet(){document.activeElement?.blur();resetAppScroll();backdrop.classList.remove('open');backdrop.setAttribute('aria-hidden','true');captureState.textContent='先记录自己的生活。每天由你确认整理结果，再决定哪些部分可以让家人看到。'}
-    document.querySelector('[data-action="close-sheet"]').addEventListener('click',closeSheet);
+    document.querySelector('[data-action="close-sheet"]').addEventListener('click',()=>{if(saveInFlight)return;void discardPendingRecording();closeSheet()});
     document.querySelector('[data-action="save-event"]').addEventListener('click',async()=>{
+      if(saveInFlight)return;
       const intent=pendingVoiceIntent;
       if(intent==='share'){
         closeSheet();exitCapture();
@@ -540,17 +692,23 @@
       }
       if(intent==='family'){closeSheet();exitCapture();showPage('family');openFamily('father');return;}
       if(!requireCurrentUser())return;
-      const title=document.querySelector('.intent-value-1').textContent.trim();
       const transcript=document.querySelector('.intent-transcript').textContent.trim().replace(/^“|”$/g,'');
-      const {error}=await insforge.database.from('life_entries').insert([{title,transcript,status:'draft'}]).select();
-      if(error){showToast('保存失败，请稍后重试');return}
-      closeSheet();exitCapture();currentMyView='day';showPage('daily');await syncPrivateData();showToast('已通过 InsForge 存入私人时间线')
+      if(!transcript){showToast('转写文字不能为空');return}
+      const title=transcript.length>36?`${transcript.slice(0,36)}…`:transcript,saveButton=document.querySelector('[data-action="save-event"]');
+      saveInFlight=true;saveButton.disabled=true;
+      try{
+        const row={title,transcript,status:'draft'};
+        if(pendingRecording){Object.assign(row,{audio_url:pendingRecording.audioUrl,audio_key:pendingRecording.audioKey,audio_format:pendingRecording.audioFormat,audio_duration_seconds:pendingRecording.duration,transcription_model:pendingRecording.model,transcription_request_id:pendingRecording.requestId,transcription_cost_usd:pendingRecording.cost})}
+        const {error}=await insforge.database.from('life_entries').insert([row]).select();
+        if(error){showToast('保存失败，请稍后重试');return}
+        pendingRecording=null;closeSheet();exitCapture();currentMyView='day';showPage('daily');await syncPrivateData();showToast('真实录音和文字已存入私人时间线')
+      }catch(error){showToast(error?.message||'保存失败，请稍后重试')}finally{saveInFlight=false;saveButton.disabled=false}
     });
     document.querySelectorAll('[data-voice-intent]').forEach(chip=>chip.addEventListener('click',()=>{
       if(processing)return;processing=true;app.classList.add('is-processing');captureState.textContent='正在理解你的意图并准备下一步…';
       setTimeout(()=>{processing=false;app.classList.remove('is-processing');openIntentSheet(chip.dataset.voiceIntent)},420)
     }));
-    backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeSheet()});
+    backdrop.addEventListener('click',e=>{if(e.target===backdrop&&!saveInFlight){void discardPendingRecording();closeSheet()}});
     document.querySelectorAll('[data-action="reply"]').forEach(b=>b.addEventListener('click',()=>{toast.textContent='回应已发送给妈妈';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200)}));
     function openShareEditor(){const recipient=currentFamily==='father'?'爸爸':'妈妈';document.querySelector('#share-sheet-title').textContent=`给${recipient}的今日近况`;document.querySelector('.share-recipient').textContent=`${recipient}将看到：`;shareBackdrop.classList.add('open');shareBackdrop.setAttribute('aria-hidden','false')}
     document.querySelectorAll('[data-action="share-card"]').forEach(b=>b.addEventListener('click',openShareEditor));

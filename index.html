@@ -374,7 +374,11 @@
 
     const insforgeUrl=import.meta.env.VITE_INSFORGE_URL;
     const insforgeAnonKey=import.meta.env.VITE_INSFORGE_ANON_KEY;
-    const insforge=insforgeUrl&&insforgeAnonKey?createClient({baseUrl:insforgeUrl,anonKey:insforgeAnonKey}):null;
+    function deriveFunctionsUrl(baseUrl){
+      try{const hostname=new URL(baseUrl).hostname;if(!hostname.endsWith('.insforge.app'))return undefined;return`https://${hostname.split('.')[0]}.function2.insforge.app`}catch{return undefined}
+    }
+    const insforgeFunctionsUrl=import.meta.env.VITE_INSFORGE_FUNCTIONS_URL||deriveFunctionsUrl(insforgeUrl);
+    const insforge=insforgeUrl&&insforgeAnonKey?createClient({baseUrl:insforgeUrl,anonKey:insforgeAnonKey,functionsUrl:insforgeFunctionsUrl}):null;
     const zhToEn={
       '让彼此知道，':'Let each other know','生活正在怎样发生。':'how life is unfolding.','随口记录一天里的小事，晚上确认 AI 的整理，再把愿意分享的部分发给父母。不是汇报行程，而是给彼此一个真正了解和关心的入口。':'Capture small moments as they happen. Review what AI organizes, then share only what you choose with family. Not a status report, but a way to truly understand and care for each other.',
       '三个核心入口':'Three core spaces','家人':'Family','记录':'Record','我':'Me','先看家人分享给我的重点，再进入妈妈或爸爸的近况。':'See what matters in family updates, then open Mom or Dad’s shared moments.','随口留下真实生活，也可以直接发出家人相关指令。':'Speak naturally to record life or ask the agent about family.','整理我的一天，也能回看我主动分享给家人的内容。':'Organize My Day and revisit what I chose to share.','完整闭环':'Complete loop','记录一句生活，在「我的一天」确认，再生成一张只有家人可见的近况卡。':'Record a moment, confirm it in My Day, then create a private family update card.',

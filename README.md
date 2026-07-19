@@ -11,8 +11,8 @@ The app uses InsForge for:
 - private recording storage and authenticated playback
 - outbound family-card persistence and deletion
 - row-level security so users can only access their own records
-- authenticated edge functions for OpenAI speech-to-text
-- authenticated one- or two-sentence AI summaries with original-transcript switching and regeneration
+- authenticated edge functions for OpenAI speech-to-text with automatic spoken-language detection
+- authenticated one- or two-sentence AI summaries that preserve the transcript's language, with original-transcript switching and regeneration
 - an authenticated OpenAI product assistant presented as the “小连” electronic pet
 
 The OpenAI key is stored only as an InsForge server secret and is never shipped to the browser.

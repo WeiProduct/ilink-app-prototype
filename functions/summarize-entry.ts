@@ -65,6 +65,14 @@ function normalizeText(value: unknown, maximum: number) {
   return text.length <= maximum ? text : '';
 }
 
+function inferTranscriptLanguage(text: string): 'en' | 'zh' {
+  const hanCharacters = (text.match(/[\u3400-\u9fff]/g) || []).length;
+  const latinCharacters = (text.match(/[A-Za-z]/g) || []).length;
+  if (!hanCharacters) return 'en';
+  if (!latinCharacters) return 'zh';
+  return hanCharacters * 2 >= latinCharacters ? 'zh' : 'en';
+}
+
 function extractOutputText(result: unknown) {
   if (!result || typeof result !== 'object') return '';
   const output = (result as { output?: unknown }).output;
@@ -123,8 +131,10 @@ export default async function summarizeEntry(req: Request): Promise<Response> {
     const body = await req.json().catch(() => null);
     const transcript = normalizeText(body?.transcript, MAX_TRANSCRIPT_CHARACTERS);
     const previousSummary = normalizeText(body?.previousSummary, 1000);
-    const language = body?.language === 'en' ? 'en' : 'zh';
     if (!transcript) return json(req, { error: 'Invalid transcript' }, 400);
+    const language = body?.language === 'en' || body?.language === 'zh'
+      ? body.language
+      : inferTranscriptLanguage(transcript);
 
     const openAIKey = Deno.env.get('OPENAI_API_KEY');
     const model = Deno.env.get('SUMMARY_MODEL') || 'gpt-5.4-mini';
@@ -182,6 +192,7 @@ export default async function summarizeEntry(req: Request): Promise<Response> {
     });
     return json(req, {
       summary,
+      language,
       model,
       provider: 'openai',
       requestId,

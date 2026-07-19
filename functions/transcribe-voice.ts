@@ -27,6 +27,14 @@ function json(req: Request, body: unknown, status = 200) {
   });
 }
 
+function inferTranscriptLanguage(text: string): 'en' | 'zh' {
+  const hanCharacters = (text.match(/[\u3400-\u9fff]/g) || []).length;
+  const latinCharacters = (text.match(/[A-Za-z]/g) || []).length;
+  if (!hanCharacters) return 'en';
+  if (!latinCharacters) return 'zh';
+  return hanCharacters * 2 >= latinCharacters ? 'zh' : 'en';
+}
+
 export default async function transcribeVoice(req: Request): Promise<Response> {
   if (req.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders(req) });
@@ -53,6 +61,9 @@ export default async function transcribeVoice(req: Request): Promise<Response> {
     }
     const audioKey = typeof body.audioKey === 'string' ? body.audioKey : '';
     const requestedFormat = typeof body.format === 'string' ? body.format.toLowerCase() : '';
+    const requestedLanguage = body.language === 'en' || body.language === 'zh'
+      ? body.language
+      : 'auto';
     const format = audioKey.split('.').pop()?.toLowerCase() || '';
     const supportedFormats = new Set([
       'flac',
@@ -182,19 +193,28 @@ export default async function transcribeVoice(req: Request): Promise<Response> {
     const form = new FormData();
     form.append('file', audioFile);
     form.append('model', model);
-    form.append('language', 'zh');
     form.append('response_format', 'json');
     form.append('temperature', '0');
-    form.append(
-      'prompt',
-      '这是 iLink 产品里的中文生活记录。请忠实转写为简体中文，保留自然标点、人名、时间，以及 iLink、InsForge 等专有名词；不要总结或添加录音中没有的内容。',
-    );
+    if (requestedLanguage === 'zh') {
+      form.append('language', 'zh');
+      form.append(
+        'prompt',
+        '这是 iLink 产品里的中文生活记录。请忠实转写为简体中文，保留自然标点、人名、时间，以及 iLink、InsForge 等专有名词；不要总结或添加录音中没有的内容。',
+      );
+    } else if (requestedLanguage === 'en') {
+      form.append('language', 'en');
+      form.append(
+        'prompt',
+        'This is a personal life update recorded in ilink. Transcribe it faithfully in English with natural punctuation, names, times, and product names such as ilink and InsForge. Do not summarize or add anything that was not spoken.',
+      );
+    }
 
     console.log('[transcribe-voice] transcription started', {
       requestTag,
       bytes: audioBlob.size,
       format,
       model,
+      requestedLanguage,
     });
     const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
       method: 'POST',
@@ -223,14 +243,20 @@ export default async function transcribeVoice(req: Request): Promise<Response> {
     }
 
     const requestId = response.headers.get('x-request-id');
+    const transcript = result.text.trim();
+    const language = requestedLanguage === 'auto'
+      ? inferTranscriptLanguage(transcript)
+      : requestedLanguage;
     console.log('[transcribe-voice] transcription completed', {
       requestTag,
       model,
+      language,
       requestId,
       totalTokens: result.usage?.total_tokens,
     });
     return json(req, {
-      text: result.text.trim(),
+      text: transcript,
+      language,
       model,
       provider: 'openai',
       requestId,

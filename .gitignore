@@ -5,6 +5,7 @@
 .env*.local
 dist
 node_modules
+.vite
 .insforge
 .agent
 .agents

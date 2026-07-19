@@ -489,7 +489,12 @@
       data.fields.forEach((field,index)=>{document.querySelector(`.intent-label-${index+1}`).textContent=field[0];document.querySelector(`.intent-value-${index+1}`).textContent=field[1]});
       document.querySelector('.intent-primary').textContent=data.primary;
     }
-    function openIntentSheet(intent){setVoiceIntent(intent);backdrop.classList.add('open');backdrop.setAttribute('aria-hidden','false');document.querySelector('.intent-primary').focus()}
+    function resetAppScroll(){app.scrollTop=0}
+    function openIntentSheet(intent){
+      setVoiceIntent(intent);resetAppScroll();backdrop.classList.add('open');backdrop.setAttribute('aria-hidden','false');
+      document.querySelector('.intent-primary').focus({preventScroll:true});
+      requestAnimationFrame(resetAppScroll);
+    }
 
     function showPage(name){
       pages.forEach(p=>p.classList.toggle('active',p.dataset.page===name));
@@ -525,7 +530,7 @@
     window.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat&&!backdrop.classList.contains('open')&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){startRecording(e)}});
     window.addEventListener('keyup',e=>{if(e.code==='Space')finishRecording(e)});
 
-    function closeSheet(){document.activeElement?.blur();backdrop.classList.remove('open');backdrop.setAttribute('aria-hidden','true');captureState.textContent='先记录自己的生活。每天由你确认整理结果，再决定哪些部分可以让家人看到。'}
+    function closeSheet(){document.activeElement?.blur();resetAppScroll();backdrop.classList.remove('open');backdrop.setAttribute('aria-hidden','true');captureState.textContent='先记录自己的生活。每天由你确认整理结果，再决定哪些部分可以让家人看到。'}
     document.querySelector('[data-action="close-sheet"]').addEventListener('click',closeSheet);
     document.querySelector('[data-action="save-event"]').addEventListener('click',async()=>{
       const intent=pendingVoiceIntent;
